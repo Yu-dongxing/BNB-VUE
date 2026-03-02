@@ -1,0 +1,2207 @@
+{
+  "openapi": "3.0.1",
+  "info": {
+    "title": "默认模块",
+    "description": "",
+    "version": "1.0.0"
+  },
+  "tags": [],
+  "paths": {
+    "/auth/mock": {
+      "post": {
+        "summary": "返回当前 token 的 subject 与传入的 userId",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AuthMockRequest",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "4": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "5": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "6": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "7": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "8": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "9": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "10": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "11": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "12": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "13": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "14": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "15": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "16": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "17": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "18": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "19": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "20": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "21": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "22": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "鉴权测试接口",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412220317-run"
+      }
+    },
+    "/api/user/init": {
+      "post": {
+        "summary": "初始化接口（返回明文，密文由拦截器处理）",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "string",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "4": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "5": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "6": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "7": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "8": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "9": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "10": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "11": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "12": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "13": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "14": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "15": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "16": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "17": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "18": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "19": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "20": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "21": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "22": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "用户接口（初始化、登录）",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412220318-run"
+      }
+    },
+    "/api/user/login": {
+      "post": {
+        "summary": "用户登录接口",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/LoginDataDTO",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "4": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "5": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "6": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "7": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "8": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "9": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "10": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "11": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "12": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "13": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "14": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "15": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "16": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "17": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "18": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "19": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "20": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "21": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "22": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "用户接口（初始化、登录）",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412220319-run"
+      }
+    },
+    "/api/user/register": {
+      "post": {
+        "summary": "用户注册接口",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/RegisterDataDTO",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "4": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "5": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "6": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "7": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "8": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "9": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "10": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "11": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "12": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "13": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "14": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "15": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "16": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "17": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "18": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "19": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "20": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "21": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "22": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "用户接口（初始化、登录）",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412220320-run"
+      }
+    },
+    "/api/user/info": {
+      "get": {
+        "summary": "获取当前登录用户信息",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "4": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "5": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "6": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "7": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "8": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "9": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "10": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "11": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "12": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "13": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "14": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "15": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "16": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "17": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "18": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "19": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "用户接口（初始化、登录）",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412224077-run"
+      }
+    },
+    "/api/user/amount/deposit": {
+      "post": {
+        "summary": "用户平台余额充值",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AmountRequestDTO",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "4": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "5": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "6": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "7": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "8": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "9": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "10": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "11": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "12": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "13": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "14": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "15": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "16": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "17": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "用户接口（初始化、登录）",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412392377-run"
+      }
+    },
+    "/api/user/bill/list": {
+      "post": {
+        "summary": "用户查询账单列表（条件筛选，分页）",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/BillQueryDTO",
+                "description": ""
+              },
+              "example": {
+                "page": 14,
+                "size": 20,
+                "startDate": "2025-09-15",
+                "endDate": "2027-01-05",
+                "billType": "ERROR_ORDER",
+                "transactionType": "TRANSFER",
+                "fundType": "EXPENSE",
+                "transactionStatus": "SUCCESS"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string",
+                  "description": ""
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "4": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "5": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "6": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "7": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "8": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "9": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "10": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "用户接口（初始化、登录）",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412504856-run"
+      }
+    },
+    "/api/user/amount/deduct": {
+      "post": {
+        "summary": "用户平台余额扣款",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/AmountRequestDTO",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "4": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "5": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "6": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "7": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "8": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "9": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "10": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "11": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "12": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "13": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "14": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "15": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "16": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "17": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "用户接口（初始化、登录）",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412392378-run"
+      }
+    },
+    "/api/user/nft/purchase": {
+      "post": {
+        "summary": "购买 NFT 卡牌资产",
+        "deprecated": false,
+        "description": "请求体需要包含数量 quantity",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/NFTPurchaseDTO",
+                "description": ""
+              },
+              "example": {
+                "number": "2"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "4": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "5": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "6": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "7": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "8": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "用户接口（初始化、登录）",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412630106-run"
+      }
+    },
+    "/api/common/enums/all": {
+      "get": {
+        "summary": "一次性返回所有需要的枚举（适合前端初始化缓存）",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": ""
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "公共接口",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412501040-run"
+      }
+    },
+    "/api/common/enum": {
+      "get": {
+        "summary": "根据类型名称动态获取（适合按需加载）",
+        "deprecated": false,
+        "description": "BillType，FundType，TransactionType",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "4": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "5": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "6": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "7": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "8": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "9": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "10": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "11": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "12": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "13": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "14": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "15": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "公共接口",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412501041-run"
+      }
+    },
+    "/api/admin/common/enums/all": {
+      "get": {
+        "summary": "一次性返回所有需要的枚举（适合前端初始化缓存）",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": ""
+              }
+            },
+            "x-apifox-name": "成功",
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "管理员端-公共接口",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412501869-run"
+      }
+    },
+    "/api/admin/common/enum": {
+      "get": {
+        "summary": "根据类型名称动态获取（适合按需加载）",
+        "deprecated": false,
+        "description": "BillType，FundType，TransactionType",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "type",
+            "in": "query",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "example": ""
+              }
+            },
+            "x-apifox-name": "成功",
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "管理员端-公共接口",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412501870-run"
+      }
+    },
+    "/api/admin/card/batch/list": {
+      "post": {
+        "summary": "获取批次列表（分页+筛选）",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/EtfCardQueryDTO",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "4": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "5": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "管理员接口 -- ETF 卡牌批次管理接口",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412731036-run"
+      }
+    },
+    "/api/admin/card/batch/add": {
+      "post": {
+        "summary": "新增发行批次",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ETFCard",
+                "description": ""
+              },
+              "example": {
+                "batchName": "第一次批次",
+                "totalSupply": 5000,
+                "unitPrice": 10,
+                "remark": "测试卡牌批次"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "4": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "5": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "管理员接口 -- ETF 卡牌批次管理接口",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412731037-run"
+      }
+    },
+    "/api/admin/card/batch/update": {
+      "post": {
+        "summary": "修改发行批次",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/ETFCard",
+                "description": ""
+              },
+              "example": {
+                "id": 5,
+                "batchName": "郯奕泽",
+                "unitPrice": 134.87,
+                "status": 0,
+                "remark": "备注"
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "4": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "5": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "管理员接口 -- ETF 卡牌批次管理接口",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412731038-run"
+      }
+    },
+    "/api/admin/card/batch/delete/{id}": {
+      "get": {
+        "summary": "删除发行批次",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "4": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "管理员接口 -- ETF 卡牌批次管理接口",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412769679-run"
+      }
+    },
+    "/api/admin/card/batch/active/{id}": {
+      "post": {
+        "summary": "激活批次（设为当前唯一激活）",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "4": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "5": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "管理员接口 -- ETF 卡牌批次管理接口",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412731040-run"
+      }
+    },
+    "/api/admin/card/batch/active-info": {
+      "get": {
+        "summary": "获取当前正在激活且启用的批次信息",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "4": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "管理员接口 -- ETF 卡牌批次管理接口",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412769680-run"
+      }
+    },
+    "/api/user/card/batch/active-info": {
+      "get": {
+        "summary": "获取当前正在激活且启用的批次信息",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "3": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "4": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "ETF 卡牌批次管理接口",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412769681-run"
+      }
+    },
+    "/api/admin/user/list": {
+      "get": {
+        "summary": "分页查询用户",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "page",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 1
+            }
+          },
+          {
+            "name": "size",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 10
+            }
+          },
+          {
+            "name": "userWalletAddress",
+            "in": "query",
+            "description": "",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "startTime",
+            "in": "query",
+            "description": "注册开始时间",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "endTime",
+            "in": "query",
+            "description": "注册结束时间",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "AdminUserController",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412874892-run"
+      }
+    },
+    "/api/admin/user/add": {
+      "post": {
+        "summary": "添加用户",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "AdminUserController",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412874893-run"
+      }
+    },
+    "/api/admin/user/update": {
+      "put": {
+        "summary": "修改用户",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [],
+        "requestBody": {
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/User",
+                "description": ""
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "AdminUserController",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412874894-run"
+      }
+    },
+    "/api/admin/user/delete/{id}": {
+      "get": {
+        "summary": "删除用户",
+        "deprecated": false,
+        "description": "",
+        "tags": [],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "string"
+                },
+                "examples": {
+                  "1": {
+                    "summary": "成功示例",
+                    "value": ""
+                  },
+                  "2": {
+                    "summary": "成功示例",
+                    "value": ""
+                  }
+                }
+              }
+            },
+            "x-apifox-ordering": 0
+          }
+        },
+        "security": [],
+        "x-apifox-folder": "AdminUserController",
+        "x-apifox-status": "released",
+        "x-run-in-apifox": "https://app.apifox.com/web/project/7774279/apis/api-412874895-run"
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "AuthMockRequest": {
+        "type": "object",
+        "properties": {
+          "userId": {
+            "type": "string",
+            "description": "业务用户ID"
+          }
+        },
+        "x-apifox-orders": [
+          "userId"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": ""
+      },
+      "LoginDataDTO": {
+        "type": "object",
+        "properties": {
+          "userWalletAddress": {
+            "type": "string",
+            "description": "用户钱包地址"
+          }
+        },
+        "x-apifox-orders": [
+          "userWalletAddress"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": ""
+      },
+      "RegisterDataDTO": {
+        "type": "object",
+        "properties": {
+          "userWalletAddress": {
+            "type": "string",
+            "description": "用户钱包地址"
+          }
+        },
+        "x-apifox-orders": [
+          "userWalletAddress"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": ""
+      },
+      "AmountRequestDTO": {
+        "type": "object",
+        "properties": {
+          "amount": {
+            "type": "string",
+            "description": "操作金额"
+          },
+          "remark": {
+            "type": "string",
+            "description": "可选备注"
+          }
+        },
+        "x-apifox-orders": [
+          "amount",
+          "remark"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": ""
+      },
+      "BillQueryDTO": {
+        "type": "object",
+        "properties": {
+          "page": {
+            "type": "integer",
+            "description": "当前页码",
+            "default": 1
+          },
+          "size": {
+            "type": "integer",
+            "description": "每页条数",
+            "default": 10
+          },
+          "startDate": {
+            "type": "string",
+            "description": "开始日期 格式：yyyy-MM-dd"
+          },
+          "endDate": {
+            "type": "string",
+            "description": "结束日期 格式：yyyy-MM-dd"
+          },
+          "billType": {
+            "type": "string",
+            "description": "账单类型筛选",
+            "enum": [
+              "PLATFORM",
+              "ON_CHAIN",
+              "ERROR_ORDER"
+            ],
+            "x-apifox-enum": [
+              {
+                "value": "PLATFORM",
+                "name": "PLATFORM",
+                "description": "PLATFORM"
+              },
+              {
+                "value": "ON_CHAIN",
+                "name": "ON_CHAIN",
+                "description": "ON_CHAIN"
+              },
+              {
+                "value": "ERROR_ORDER",
+                "name": "ERROR_ORDER",
+                "description": "ERROR_ORDER"
+              }
+            ]
+          },
+          "transactionType": {
+            "type": "string",
+            "description": "交易类型筛选",
+            "enum": [
+              "PURCHASE",
+              "SELL",
+              "DEPOSIT",
+              "WITHDRAWAL",
+              "EXCHANGE",
+              "REWARD",
+              "PROFIT",
+              "TRANSFER"
+            ],
+            "x-apifox-enum": [
+              {
+                "value": "PURCHASE",
+                "name": "PURCHASE",
+                "description": "PURCHASE"
+              },
+              {
+                "value": "SELL",
+                "name": "SELL",
+                "description": "SELL"
+              },
+              {
+                "value": "DEPOSIT",
+                "name": "DEPOSIT",
+                "description": "DEPOSIT"
+              },
+              {
+                "value": "WITHDRAWAL",
+                "name": "WITHDRAWAL",
+                "description": "WITHDRAWAL"
+              },
+              {
+                "value": "EXCHANGE",
+                "name": "EXCHANGE",
+                "description": "EXCHANGE"
+              },
+              {
+                "value": "REWARD",
+                "name": "REWARD",
+                "description": "REWARD"
+              },
+              {
+                "value": "PROFIT",
+                "name": "PROFIT",
+                "description": "PROFIT"
+              },
+              {
+                "value": "TRANSFER",
+                "name": "TRANSFER",
+                "description": "TRANSFER"
+              }
+            ]
+          },
+          "fundType": {
+            "type": "string",
+            "description": "出入账类型筛选",
+            "enum": [
+              "INCOME",
+              "EXPENSE"
+            ],
+            "x-apifox-enum": [
+              {
+                "value": "INCOME",
+                "name": "INCOME",
+                "description": "INCOME"
+              },
+              {
+                "value": "EXPENSE",
+                "name": "EXPENSE",
+                "description": "EXPENSE"
+              }
+            ]
+          },
+          "transactionStatus": {
+            "type": "string",
+            "description": "交易状态",
+            "enum": [
+              "PENDING",
+              "SUCCESS",
+              "FAILED"
+            ],
+            "x-apifox-enum": [
+              {
+                "value": "PENDING",
+                "name": "PENDING",
+                "description": "处理中"
+              },
+              {
+                "value": "SUCCESS",
+                "name": "SUCCESS",
+                "description": "成功"
+              },
+              {
+                "value": "FAILED",
+                "name": "FAILED",
+                "description": "失败"
+              }
+            ]
+          }
+        },
+        "x-apifox-orders": [
+          "page",
+          "size",
+          "startDate",
+          "endDate",
+          "billType",
+          "transactionType",
+          "fundType",
+          "transactionStatus"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": ""
+      },
+      "NFTPurchaseDTO": {
+        "type": "object",
+        "properties": {
+          "number": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "x-apifox-orders": [
+          "number"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": ""
+      },
+      "EtfCardQueryDTO": {
+        "type": "object",
+        "properties": {
+          "batchName": {
+            "type": "string",
+            "description": ""
+          },
+          "batchNo": {
+            "type": "string",
+            "description": ""
+          },
+          "status": {
+            "type": "integer",
+            "description": ""
+          },
+          "isCurrent": {
+            "type": "integer",
+            "description": ""
+          },
+          "page": {
+            "type": "integer",
+            "description": "",
+            "default": 1
+          },
+          "size": {
+            "type": "integer",
+            "description": "",
+            "default": 10
+          }
+        },
+        "x-apifox-orders": [
+          "batchName",
+          "batchNo",
+          "status",
+          "isCurrent",
+          "page",
+          "size"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": ""
+      },
+      "ETFCard": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "主键id",
+            "format": "int64"
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间",
+            "x-apifox-mock": "@datetime"
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "更新时间",
+            "x-apifox-mock": "@datetime"
+          },
+          "batchName": {
+            "type": "string",
+            "description": ""
+          },
+          "batchNo": {
+            "type": "string",
+            "description": ""
+          },
+          "totalSupply": {
+            "type": "integer",
+            "description": ""
+          },
+          "soldCount": {
+            "type": "integer",
+            "description": ""
+          },
+          "inventory": {
+            "type": "integer",
+            "description": ""
+          },
+          "unitPrice": {
+            "type": "number",
+            "description": ""
+          },
+          "isCurrent": {
+            "type": "integer",
+            "description": "是否为当前激活批次\n0-否，1-是\n业务逻辑需保证全表只有一个1"
+          },
+          "status": {
+            "type": "integer",
+            "description": ""
+          },
+          "remark": {
+            "type": "string",
+            "description": ""
+          }
+        },
+        "x-apifox-orders": [
+          "id",
+          "createTime",
+          "updateTime",
+          "batchName",
+          "batchNo",
+          "totalSupply",
+          "soldCount",
+          "inventory",
+          "unitPrice",
+          "isCurrent",
+          "status",
+          "remark"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": ""
+      },
+      "User": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "integer",
+            "description": "主键id",
+            "format": "int64"
+          },
+          "createTime": {
+            "type": "string",
+            "description": "创建时间",
+            "x-apifox-mock": "@datetime"
+          },
+          "updateTime": {
+            "type": "string",
+            "description": "更新时间",
+            "x-apifox-mock": "@datetime"
+          },
+          "userName": {
+            "type": "string",
+            "description": "用户名"
+          },
+          "userWalletAddress": {
+            "type": "string",
+            "description": "用户钱包地址"
+          },
+          "balance": {
+            "type": "number",
+            "description": "用户账户余额(作为余额缓存，实际余额需要根据账本数据进行计算)"
+          }
+        },
+        "x-apifox-orders": [
+          "id",
+          "createTime",
+          "updateTime",
+          "userName",
+          "userWalletAddress",
+          "balance"
+        ],
+        "x-apifox-ignore-properties": [],
+        "x-apifox-folder": ""
+      }
+    },
+    "responses": {},
+    "securitySchemes": {}
+  },
+  "servers": [
+    {
+      "url": "http://127.0.0.1:8080",
+      "description": "开发环境"
+    },
+    {
+      "url": "http://test-cn.your-api-server.com",
+      "description": "测试环境"
+    },
+    {
+      "url": "http://prod-cn.your-api-server.com",
+      "description": "正式环境"
+    }
+  ],
+  "security": []
+}
