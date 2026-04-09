@@ -1,6 +1,6 @@
 import request from "../utils/request.js";
 
-// 获取批次列表 (POST)
+// 获取批次列表
 export function getBatchList(data) {
   return request({
     url: "/admin/card/batch/list",
@@ -40,5 +40,13 @@ export function activeBatch(id) {
   return request({
     url: `/admin/card/batch/active/${id}`,
     method: "post",
+  });
+}
+
+// 获取三种卡牌当前激活批次
+export function getActiveBatchInfo() {
+  return request({
+    url: "/admin/card/batch/active-info",
+    method: "get",
   });
 }
