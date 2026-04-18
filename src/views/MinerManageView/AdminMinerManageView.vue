@@ -1,13 +1,11 @@
 <template>
   <div class="page-container">
-    <!-- 页头 -->
     <header class="page-header">
       <div class="header-actions">
         <el-button :icon="Refresh" @click="getList">刷新数据</el-button>
       </div>
     </header>
 
-    <!-- 搜索筛选栏 -->
     <section class="search-card">
       <el-form :inline="true" :model="queryParams" class="demo-form-inline">
         <el-form-item label="矿机ID">
@@ -19,11 +17,11 @@
             <el-option label="小型" value="0" />
             <el-option label="中型" value="1" />
             <el-option label="大型" value="2" />
-            <!-- <el-option label="大型" value="3" /> -->
+            <el-option label="特殊" value="3" />
           </el-select>
         </el-form-item>
 
-        <el-form-item label="运行状态">
+        <el-form-item label="矿机状态">
           <el-select v-model="queryParams.status" placeholder="全部" clearable style="width: 120px">
             <el-option label="待激活" :value="0" />
             <el-option label="运行中" :value="1" />
@@ -31,18 +29,18 @@
           </el-select>
         </el-form-item>
 
-        <el-form-item label="电费缴纳">
-          <el-select v-model="queryParams.isElectricityPaid" placeholder="全部" clearable style="width: 100px">
-            <el-option label="是" :value="1" />
-            <el-option label="否" :value="0" />
+        <el-form-item label="是否缴电费">
+          <el-select v-model="queryParams.isElectricityPaid" placeholder="全部" clearable style="width: 120px">
+            <el-option label="已缴电费" :value="1" />
+            <el-option label="未缴电费" :value="0" />
           </el-select>
         </el-form-item>
 
-        <el-form-item label="到期提醒">
-          <el-select v-model="queryParams.expiryStatus" placeholder="筛选到期情况" clearable style="width: 150px">
+        <el-form-item label="到期状态">
+          <el-select v-model="queryParams.expiryStatus" placeholder="全部" clearable style="width: 140px">
             <el-option label="已到期" :value="1" />
-            <el-option label="未到期" :value="2" />
-            <el-option label="即将到期(≤5天)" :value="3" />
+            <el-option label="正常" :value="2" />
+            <el-option label="即将到期" :value="3" />
           </el-select>
         </el-form-item>
 
@@ -51,8 +49,8 @@
             v-model="dateRange"
             type="datetimerange"
             range-separator="至"
-            start-placeholder="开始"
-            end-placeholder="结束"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
             value-format="YYYY-MM-DD HH:mm:ss"
           />
         </el-form-item>
@@ -64,79 +62,72 @@
       </el-form>
     </section>
 
-    <!-- 数据表格 -->
     <section class="table-panel">
-      <el-table 
-        v-loading="loading" 
-        :data="tableData" 
-        border 
-        stripe
-        style="width: 100%"
-      >
+      <el-table v-loading="loading" :data="tableData" border stripe style="width: 100%">
         <el-table-column prop="id" label="ID" width="70" align="center" />
-        
-        <el-table-column label="矿机信息" min-width="180">
-          <template #default="scope">
+        <el-table-column prop="userId" label="用户ID" width="100" align="center" />
+
+        <el-table-column label="矿机信息" min-width="220">
+          <template #default="{ row }">
             <div class="miner-info">
-              <el-tag size="small" effect="dark" :type="getMinerTypeTag(scope.row.minerType)">
-                {{ getMinerTypeName(scope.row.minerType) }}
+              <el-tag size="small" effect="dark" :type="getMinerTypeTag(row.minerType)">
+                {{ getMinerTypeName(row.minerType) }}
               </el-tag>
-              <span class="miner-id">{{ scope.row.minerId }}</span>
+              <span class="miner-id">{{ row.minerId || '-' }}</span>
             </div>
-            <div class="wallet-addr">{{ scope.row.walletAddress }}</div>
+            <div class="wallet-addr">{{ row.walletAddress || '-' }}</div>
           </template>
         </el-table-column>
 
-        <el-table-column label="卡牌消耗" width="150">
-          <template #default="scope">
-            <div v-if="scope.row.nftCardId">
-              <el-tag size="small" :type="getCardTypeTag(scope.row.nftCardId)">
-                {{ getCardTypeName(scope.row.nftCardId) }}
+        <el-table-column label="兑换卡牌" min-width="170">
+          <template #default="{ row }">
+            <div v-if="row.nftCardId">
+              <el-tag size="small" :type="getCardTypeTag(row.nftCardId)">
+                {{ getCardTypeName(row.nftCardId) }}
               </el-tag>
-              <div class="order-id">单号: {{ scope.row.nftBurnOrderId || '-' }}</div>
+              <div class="sub-label">卡牌ID: {{ row.nftCardId }}</div>
             </div>
             <span v-else>-</span>
           </template>
         </el-table-column>
 
-        <el-table-column label="运行状态" width="100" align="center">
-          <template #default="scope">
-            <el-badge is-dot :type="scope.row.status === 1 ? 'success' : 'danger'">
-              {{ getStatusName(scope.row.status) }}
-            </el-badge>
-          </template>
-        </el-table-column>
-
-        <el-table-column label="加速状态" width="100" align="center">
-          <template #default="scope">
-            <el-tag :type="scope.row.isAccelerated === 1 ? 'warning' : 'info'" effect="plain">
-              {{ scope.row.isAccelerated === 1 ? '已加速' : '普通' }}
+        <el-table-column label="卡牌销毁状态" width="140" align="center">
+          <template #default="{ row }">
+            <el-tag :type="getBurnStatusTag(row.nftBurnStatus)" effect="plain">
+              {{ getBurnStatusName(row.nftBurnStatus) }}
             </el-tag>
           </template>
         </el-table-column>
 
-        <el-table-column label="电费/有效期" min-width="200">
-          <template #default="scope">
-            <div>
-              电费：<el-tag size="small" :type="scope.row.isElectricityPaid === 1 ? 'success' : 'danger'">
-                {{ scope.row.isElectricityPaid === 1 ? '已缴纳' : '未缴纳' }}
-              </el-tag>
-            </div>
-            <div class="time-label">缴费日: {{ scope.row.paymentDate || '-' }}</div>
-            <div class="time-label">收益起算: {{ scope.row.eligibleDate || '-' }}</div>
+        <el-table-column label="矿机状态" width="110" align="center">
+          <template #default="{ row }">
+            <el-tag :type="getStatusTag(row.status)" effect="dark">
+              {{ getStatusName(row.status) }}
+            </el-tag>
           </template>
         </el-table-column>
 
-        <el-table-column prop="createTime" label="购买时间" width="170" />
-
-        <!-- <el-table-column label="操作" width="120" fixed="right" align="center">
-          <template #default="scope">
-            <el-button link type="primary" @click="handleDetail(scope.row)">详情</el-button>
+        <el-table-column label="电费状态" width="120" align="center">
+          <template #default="{ row }">
+            <el-tag :type="row.isElectricityPaid === 1 ? 'success' : 'danger'" effect="plain">
+              {{ row.isElectricityPaid === 1 ? '已缴电费' : '未缴电费' }}
+            </el-tag>
           </template>
-        </el-table-column> -->
+        </el-table-column>
+
+        <el-table-column label="到期状态" width="120" align="center">
+          <template #default="{ row }">
+            <el-tag :type="getExpiryTag(row)" effect="plain">
+              {{ getExpiryStatusName(row) }}
+            </el-tag>
+          </template>
+        </el-table-column>
+
+        <el-table-column prop="paymentDate" label="最近缴费时间" width="170" />
+        <el-table-column prop="lastRewardTime" label="最近收益时间" width="170" />
+        <el-table-column prop="createTime" label="创建时间" width="170" />
       </el-table>
 
-      <!-- 分页器 -->
       <div class="pagination-container">
         <el-pagination
           v-model:current-page="queryParams.page"
@@ -153,38 +144,34 @@
 </template>
 
 <script setup>
-import { ref, reactive, onMounted, watch } from 'vue'
+import { ref, reactive, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
 import { Search, Refresh } from '@element-plus/icons-vue'
 import { getMinerList } from '../../api/miner'
 
-// --- 数据定义 ---
 const loading = ref(false)
 const tableData = ref([])
 const total = ref(0)
 const dateRange = ref([])
 
-// 查询参数 (对应 MinerQueryDTO)
-const queryParams = reactive({
+const createDefaultQueryParams = () => ({
   page: 1,
   size: 10,
   minerId: '',
   minerType: '',
   status: null,
   isElectricityPaid: null,
-  isAccelerated: null,
   expiryStatus: null,
   startTime: '',
   endTime: ''
 })
 
-// --- 逻辑方法 ---
+const queryParams = reactive(createDefaultQueryParams())
 
 const getList = async () => {
   loading.value = true
   try {
-    // 处理日期范围映射到 startTime/endTime
-    if (dateRange.value && dateRange.value.length === 2) {
+    if (dateRange.value?.length === 2) {
       queryParams.startTime = dateRange.value[0]
       queryParams.endTime = dateRange.value[1]
     } else {
@@ -193,17 +180,17 @@ const getList = async () => {
     }
 
     const res = await getMinerList(queryParams)
-    // 根据ApiResponse结构解析
     const result = typeof res === 'string' ? JSON.parse(res) : res
-    
+
     if (result.code === 200) {
-      tableData.value = result.data.records
-      total.value = result.data.total
-    } else {
-      ElMessage.error(result.message || '获取列表失败')
+      tableData.value = result.data?.records || []
+      total.value = result.data?.total || 0
+      return
     }
+
+    ElMessage.error(result.message || '获取矿机列表失败')
   } catch (error) {
-    console.error("Fetch error:", error)
+    console.error('Fetch error:', error)
     ElMessage.error('网络请求异常')
   } finally {
     loading.value = false
@@ -217,51 +204,78 @@ const handleSearch = () => {
 
 const resetQuery = () => {
   dateRange.value = []
-  Object.assign(queryParams, {
-    page: 1,
-    size: 10,
-    minerId: '',
-    minerType: '',
-    status: null,
-    isElectricityPaid: null,
-    isAccelerated: null,
-    expiryStatus: null,
-    startTime: '',
-    endTime: ''
-  })
+  Object.assign(queryParams, createDefaultQueryParams())
   getList()
 }
 
-const handleDetail = (row) => {
-  console.log("查看详情", row)
-  ElMessage.info(`查看矿机 ${row.minerId} 的详细信息（功能开发中）`)
-}
-
-// --- 格式化辅助函数 ---
-
 const getMinerTypeName = (type) => {
-  const maps = { '0': '小型', '1': '中型', '2': '大型', '3': '大型' }
-  return maps[type] || '未知'
+  const maps = { '0': '小型', '1': '中型', '2': '大型', '3': '特殊' }
+  return maps[String(type)] || '未知'
 }
 
 const getMinerTypeTag = (type) => {
   const maps = { '0': '', '1': 'success', '2': 'warning', '3': 'danger' }
-  return maps[type] || 'info'
+  return maps[String(type)] || 'info'
 }
 
 const getCardTypeName = (id) => {
-  const maps = { 1: '铜卡 (Copper)', 2: '银卡 (Silver)', 3: '金卡 (Gold)' }
-  return maps[id] || '未知'
+  const maps = { 1: '铜卡', 2: '银卡', 3: '金卡' }
+  return maps[Number(id)] || '未知卡牌'
 }
 
 const getCardTypeTag = (id) => {
   const maps = { 1: 'info', 2: '', 3: 'warning' }
-  return maps[id] || ''
+  return maps[Number(id)] || 'info'
+}
+
+const getBurnStatusName = (status) => {
+  const maps = { 0: '销毁处理中', 1: '已销毁' }
+  return maps[Number(status)] || '未知'
+}
+
+const getBurnStatusTag = (status) => {
+  const maps = { 0: 'warning', 1: 'success' }
+  return maps[Number(status)] || 'info'
 }
 
 const getStatusName = (status) => {
   const maps = { 0: '待激活', 1: '运行中', 2: '已过期' }
-  return maps[status] ?? '未知'
+  return maps[Number(status)] || '未知'
+}
+
+const getStatusTag = (status) => {
+  const maps = { 0: 'warning', 1: 'success', 2: 'danger' }
+  return maps[Number(status)] || 'info'
+}
+
+const getExpiryStatusName = (row) => {
+  const status = Number(row.status)
+  if (status === 0) return '不适用'
+  if (status === 2) return '已到期'
+  if (status !== 1 || !row.paymentDate) return '-'
+
+  const paymentTime = new Date(row.paymentDate).getTime()
+  if (Number.isNaN(paymentTime)) return '-'
+
+  const now = Date.now()
+  const expiredBoundary = now - 30 * 24 * 60 * 60 * 1000
+  const soonBoundary = now - 25 * 24 * 60 * 60 * 1000
+
+  if (paymentTime < expiredBoundary) return '已到期'
+  if (paymentTime <= soonBoundary) return '即将到期'
+  return '正常'
+}
+
+const getExpiryTag = (row) => {
+  const status = getExpiryStatusName(row)
+  const maps = {
+    已到期: 'danger',
+    即将到期: 'warning',
+    正常: 'success',
+    不适用: 'info',
+    '-': 'info'
+  }
+  return maps[status] || 'info'
 }
 
 onMounted(() => {
@@ -281,29 +295,13 @@ onMounted(() => {
   margin-bottom: 24px;
 }
 
-.eyebrow {
-  text-transform: uppercase;
-  color: #1d7f6e;
-  font-weight: 700;
-  font-size: 0.75rem;
-  letter-spacing: 0.1em;
-  margin-bottom: 4px;
-}
-
-.title {
-  font-size: 1.75rem;
-  font-weight: 800;
-  color: var(--el-text-color-primary);
-  margin: 0;
-}
-
 .search-card {
   background: var(--el-bg-color);
   border: 1px solid var(--el-border-color-light);
   border-radius: 12px;
   padding: 24px;
   margin-bottom: 20px;
-  box-shadow: 0 2px 12px 0 rgba(0,0,0,0.02);
+  box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.02);
 }
 
 .table-panel {
@@ -329,18 +327,13 @@ onMounted(() => {
   font-size: 12px;
   color: #909399;
   font-family: monospace;
+  word-break: break-all;
 }
 
-.order-id {
-  font-size: 11px;
-  color: #a8abb2;
-  margin-top: 4px;
-}
-
-.time-label {
+.sub-label {
   font-size: 12px;
   color: #606266;
-  margin-top: 2px;
+  margin-top: 4px;
 }
 
 .pagination-container {
@@ -350,11 +343,17 @@ onMounted(() => {
 }
 
 @keyframes fadeIn {
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
 
-/* 响应式调整 */
 @media (max-width: 768px) {
   .search-card .el-form-item {
     width: 100%;

@@ -4,8 +4,8 @@ import router from "../router"; // 必须引入路由，用于强制跳转
 const DEFAULT_TIMEOUT = 10000;
 
 const service = axios.create({
-// baseURL: "http://127.0.0.1:8080/api",
-  baseURL: "https://api.airwordaion.com/api",
+baseURL: "http://127.0.0.1:8080/api",
+  // baseURL: "https://api.airwordaion.com/api",
   timeout: DEFAULT_TIMEOUT,
 });
 
