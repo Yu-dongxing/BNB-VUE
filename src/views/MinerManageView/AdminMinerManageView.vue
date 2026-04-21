@@ -17,7 +17,7 @@
             <el-option label="小型" value="0" />
             <el-option label="中型" value="1" />
             <el-option label="大型" value="2" />
-            <el-option label="特殊" value="3" />
+            <!-- <el-option label="特殊" value="3" /> -->
           </el-select>
         </el-form-item>
 
@@ -209,7 +209,7 @@ const resetQuery = () => {
 }
 
 const getMinerTypeName = (type) => {
-  const maps = { '0': '小型', '1': '中型', '2': '大型', '3': '特殊' }
+  const maps = { '0': '小型', '1': '中型', '2': '大型', '3': '大型' }
   return maps[String(type)] || '未知'
 }
 

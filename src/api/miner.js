@@ -8,6 +8,18 @@ export function getMinerList(data) {
   return request({
     url: '/admin/miner/list',
     method: 'post',
-    data: data
+    data
+  })
+}
+
+/**
+ * 为指定用户发放特殊矿机
+ * @param {{ userId: number, quantity: number, remark?: string }} data
+ */
+export function assignSpecialMiner(data) {
+  return request({
+    url: '/admin/miner/assign-special',
+    method: 'post',
+    data
   })
 }

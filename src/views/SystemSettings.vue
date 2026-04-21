@@ -88,7 +88,7 @@
         </el-row>
 
         <el-form-item label="作用说明/备注">
-          <el-input v-model="form.remark" placeholder="描述此配置项的业务用途" />
+          <el-input v-model="form.remark" placeholder="描述该配置项的业务用途" />
         </el-form-item>
 
         <div class="visual-form-wrapper">
@@ -105,11 +105,56 @@
                   <el-input-number v-model="visualData.electricFee" :precision="2" :step="0.1" style="width: 100%" />
                 </el-form-item>
               </el-col>
+              <!-- <el-col :span="6">
+                <el-form-item :label="FIELD_MAP.accelerationFee">
+                  <el-input-number
+                    v-model="visualData.accelerationFee"
+                    :precision="2"
+                    :step="0.1"
+                    :min="0"
+                    style="width: 100%"
+                  />
+                </el-form-item>
+              </el-col> -->
+              <el-col :span="6">
+                <el-form-item :label="FIELD_MAP.profitTime">
+                  <el-time-picker v-model="visualData.profitTime" value-format="HH:mm:ss" style="width: 100%" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
+                <el-form-item :label="FIELD_MAP.electricityRewardTime">
+                  <el-time-picker
+                    v-model="visualData.electricityRewardTime"
+                    value-format="HH:mm:ss"
+                    style="width: 100%"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+
+            <el-divider content-position="left">矿机每日收益配置</el-divider>
+
+            <el-row :gutter="20">
+              <el-col v-for="minerType in visibleMinerProfitKeys" :key="minerType" :span="6">
+                <el-form-item :label="MINER_TYPE_LABELS[minerType]">
+                  <el-input-number
+                    v-model="visualData.minerDailyProfits[minerType]"
+                    :precision="6"
+                    :step="0.1"
+                    :min="0"
+                    controls-position="right"
+                    style="width: 100%"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+            <p class="form-tip">提交后会按 6 位小数向下截断处理</p>
+
+            <el-divider content-position="left">碎片兑换比例</el-divider>
+
+            <el-row :gutter="20">
               <el-col :span="8">
-                <el-form-item
-                  label="铜卡牌(id=1)碎片兑换比例(张/卡)"
-                  class="card-rate-form-item"
-                >
+                <el-form-item label="铜卡牌(id=1)碎片兑换比例(张/卡)" class="card-rate-form-item">
                   <el-input-number
                     v-model="visualData.fragmentToCardRates[1]"
                     :precision="0"
@@ -120,10 +165,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item
-                  label="银卡牌(id=2)碎片兑换比例(张/卡)"
-                  class="card-rate-form-item"
-                >
+                <el-form-item label="银卡牌(id=2)碎片兑换比例(张/卡)" class="card-rate-form-item">
                   <el-input-number
                     v-model="visualData.fragmentToCardRates[2]"
                     :precision="0"
@@ -133,33 +175,13 @@
                   />
                 </el-form-item>
               </el-col>
-            </el-row>
-
-            <el-row :gutter="20">
               <el-col :span="8">
-                <el-form-item
-                  label="金卡牌(id=3)碎片兑换比例(张/卡)"
-                  class="card-rate-form-item"
-                >
+                <el-form-item label="金卡牌(id=3)碎片兑换比例(张/卡)" class="card-rate-form-item">
                   <el-input-number
                     v-model="visualData.fragmentToCardRates[3]"
                     :precision="0"
                     :min="1"
                     :step="1"
-                    style="width: 100%"
-                  />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item :label="FIELD_MAP.profitTime">
-                  <el-time-picker v-model="visualData.profitTime" value-format="HH:mm:ss" style="width: 100%" />
-                </el-form-item>
-              </el-col>
-              <el-col :span="8">
-                <el-form-item :label="FIELD_MAP.electricityRewardTime">
-                  <el-time-picker
-                    v-model="visualData.electricityRewardTime"
-                    value-format="HH:mm:ss"
                     style="width: 100%"
                   />
                 </el-form-item>
@@ -201,14 +223,25 @@
 
           <div v-else-if="form.configKey === 'WITHDRAW_SETTINGS'" class="custom-form-box">
             <el-row :gutter="20">
-              <el-col :span="12">
+              <el-col :span="8">
                 <el-form-item :label="FIELD_MAP.minAmount">
                   <el-input-number v-model="visualData.minAmount" :min="0" style="width: 100%" />
                 </el-form-item>
               </el-col>
-              <el-col :span="12">
+              <el-col :span="8">
                 <el-form-item :label="FIELD_MAP.feeRate">
                   <el-input-number v-model="visualData.feeRate" :precision="3" :max="1" :min="0" style="width: 100%" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item :label="FIELD_MAP.uPerCoin">
+                  <el-input-number
+                    v-model="visualData.uPerCoin"
+                    :precision="6"
+                    :step="0.1"
+                    :min="0.000001"
+                    style="width: 100%"
+                  />
                 </el-form-item>
               </el-col>
             </el-row>
@@ -235,12 +268,54 @@ import { ref, reactive, onMounted, computed } from 'vue'
 import { Search, Plus, Refresh, Delete } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import * as configApi from '../api/systemConfig'
+import { getCurrentAdminInfo } from '../api/rbac'
 
 const DEFAULT_FRAGMENT_TO_CARD_RATE = 100
 const DEFAULT_FRAGMENT_TO_CARD_RATES = {
   1: 100,
   2: 150,
   3: 200
+}
+const DEFAULT_MINER_DAILY_PROFITS = {
+  '0': 0,
+  '1': 0,
+  '2': 0,
+  '3': 0
+}
+const DEFAULT_WITHDRAW_SETTINGS = {
+  minAmount: 10,
+  feeRate: 0.05,
+  uPerCoin: 1
+}
+const MINER_TYPE_LABELS = {
+  '0': '小型矿机日收益',
+  '1': '中型矿机日收益',
+  '2': '大型矿机日收益',
+  '3': '默认（3）矿机日收益'
+}
+
+const truncateToSixDecimals = (value) => {
+  const numericValue = Number(value)
+  if (!Number.isFinite(numericValue) || numericValue < 0) {
+    return 0
+  }
+
+  return Math.floor(numericValue * 1000000) / 1000000
+}
+
+const normalizeMinerDailyProfits = (source = {}) => {
+  const rawProfits = source.minerDailyProfits || {}
+  const normalized = {}
+
+  ;['0', '1', '2', '3'].forEach((minerType) => {
+    const current = rawProfits[minerType] ?? rawProfits[Number(minerType)]
+    normalized[minerType] =
+      current === undefined || current === null || current === ''
+        ? DEFAULT_MINER_DAILY_PROFITS[minerType]
+        : truncateToSixDecimals(current)
+  })
+
+  return normalized
 }
 
 const normalizeFragmentToCardRates = (source = {}) => {
@@ -259,27 +334,28 @@ const normalizeFragmentToCardRates = (source = {}) => {
 }
 
 const sanitizeMinerSettings = (source = {}) => {
-  const sanitized = {
+  return {
     ...source,
     tiers: Array.isArray(source.tiers) ? source.tiers : [],
     electricityRewardTime: source.electricityRewardTime || '23:50:00',
     profitTime: source.profitTime || '23:59:00',
+    electricFee: Number(source.electricFee ?? 0),
+    accelerationFee: Number(source.accelerationFee ?? 0),
+    minerDailyProfits: normalizeMinerDailyProfits(source),
     fragmentToCardRate: source.fragmentToCardRate ?? DEFAULT_FRAGMENT_TO_CARD_RATE,
     fragmentToCardRates: normalizeFragmentToCardRates(source)
   }
-
-  delete sanitized.accelerationFee
-  return sanitized
 }
 
 const FIELD_MAP = {
   electricFee: '电费单价 (USDT)',
-  profitTime: '矿机执行结算时间',
+  accelerationFee: '加速包费用 (USDT)',
+  profitTime: '矿机收益发放时间',
   electricityRewardTime: '电费分成结算时间',
   rewardTiers: '下级电费分成阶梯',
-  minAmount: '最低提现金额 (USDT)',
+  minAmount: '最低提现金额(USDT)',
   feeRate: '提现手续费率',
-  fragmentToCardRate: '碎片兑换比例 (张/卡)'
+  uPerCoin: '一个币对应多少U'
 }
 
 const VISUAL_KEYS = ['MINER_SYSTEM_SETTINGS', 'WITHDRAW_SETTINGS']
@@ -289,11 +365,26 @@ const showModal = ref(false)
 const configList = ref([])
 const total = ref(0)
 const visualData = ref({})
+const currentRoleKey = ref('')
 
 const queryParams = reactive({ page: 1, size: 10, configKey: '' })
 const form = reactive({ id: null, configName: '', configKey: '', configValue: '', remark: '' })
 
 const isVisualMode = computed(() => VISUAL_KEYS.includes(form.configKey))
+const isSuperAdmin = computed(() => currentRoleKey.value === 'super_admin')
+const visibleMinerProfitKeys = computed(() => (isSuperAdmin.value ? ['0', '1', '2', '3'] : ['0', '1', '2']))
+
+const fetchCurrentAdminRole = async () => {
+  try {
+    const res = await getCurrentAdminInfo()
+    if (res?.code === 200 && res.data?.role?.roleKey) {
+      currentRoleKey.value = res.data.role.roleKey
+    }
+  } catch (error) {
+    console.error('获取当前管理员角色失败:', error)
+    currentRoleKey.value = ''
+  }
+}
 
 const fetchList = async () => {
   loading.value = true
@@ -320,21 +411,19 @@ const openModal = (row = null) => {
         if (form.configKey === 'MINER_SYSTEM_SETTINGS') {
           visualData.value = sanitizeMinerSettings(parsed)
         } else {
-          visualData.value = parsed
+          visualData.value = sanitizeWithdrawSettings(parsed)
         }
       } catch (error) {
         console.error('JSON 解析失败:', error)
-        visualData.value =
-          form.configKey === 'MINER_SYSTEM_SETTINGS'
-            ? sanitizeMinerSettings()
-            : {}
+        visualData.value = form.configKey === 'MINER_SYSTEM_SETTINGS' ? sanitizeMinerSettings() : sanitizeWithdrawSettings()
       }
     }
   } else {
     Object.assign(form, { id: null, configName: '', configKey: '', configValue: '', remark: '' })
     visualData.value = sanitizeMinerSettings({
       distributionRatios: {},
-      electricFee: 0
+      electricFee: 0,
+      accelerationFee: 0
     })
   }
 
@@ -350,6 +439,20 @@ const removeTierRow = (index) => {
   visualData.value.tiers.splice(index, 1)
 }
 
+const validateMinerDailyProfits = () => {
+  const profits = visualData.value?.minerDailyProfits || {}
+  return ['0', '1', '2', '3'].find((key) => {
+    const rawValue = profits[key]
+    return rawValue === undefined || rawValue === null || rawValue === '' || !Number.isFinite(Number(rawValue)) || Number(rawValue) < 0
+  })
+}
+
+const sanitizeWithdrawSettings = (source = {}) => ({
+  minAmount: Number(source.minAmount ?? DEFAULT_WITHDRAW_SETTINGS.minAmount),
+  feeRate: Number(source.feeRate ?? DEFAULT_WITHDRAW_SETTINGS.feeRate),
+  uPerCoin: Number(source.uPerCoin ?? DEFAULT_WITHDRAW_SETTINGS.uPerCoin)
+})
+
 const submitForm = async () => {
   if (isVisualMode.value) {
     if (form.configKey === 'MINER_SYSTEM_SETTINGS') {
@@ -360,10 +463,25 @@ const submitForm = async () => {
         return
       }
 
+      const invalidProfitKey = validateMinerDailyProfits()
+      if (invalidProfitKey) {
+        ElMessage.error(`${MINER_TYPE_LABELS[invalidProfitKey]}必须填写且不能小于 0`)
+        return
+      }
+
       visualData.value = sanitizeMinerSettings({
         ...visualData.value,
+        minerDailyProfits: normalizeMinerDailyProfits(visualData.value),
         fragmentToCardRates
       })
+    } else if (form.configKey === 'WITHDRAW_SETTINGS') {
+      const nextWithdrawSettings = sanitizeWithdrawSettings(visualData.value)
+      if (!Number.isFinite(nextWithdrawSettings.uPerCoin) || nextWithdrawSettings.uPerCoin <= 0) {
+        ElMessage.error('一个币对应多少U必须大于 0')
+        return
+      }
+
+      visualData.value = nextWithdrawSettings
     }
 
     form.configValue = JSON.stringify(visualData.value)
@@ -389,7 +507,10 @@ const formatPreview = (val) => {
   return val.length > 60 ? `${val.substring(0, 60)}...` : val
 }
 
-onMounted(fetchList)
+onMounted(async () => {
+  await fetchCurrentAdminRole()
+  fetchList()
+})
 </script>
 
 <style scoped>
@@ -489,6 +610,12 @@ onMounted(fetchList)
   padding: 20px;
   border-radius: 8px;
   border: 1px dashed var(--el-border-color-darker);
+}
+
+.form-tip {
+  margin: 0 0 16px;
+  color: var(--el-text-color-secondary);
+  font-size: 12px;
 }
 
 :deep(.card-rate-form-item .el-form-item__label) {
