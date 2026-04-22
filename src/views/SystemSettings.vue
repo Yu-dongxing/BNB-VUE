@@ -188,21 +188,29 @@
               </el-col>
             </el-row>
 
-            <el-divider content-position="left">分成与阶梯奖励配置</el-divider>
+            <el-divider content-position="left">等级与分成</el-divider>
+
+            <el-form-item label="等级判断标准">
+              <el-switch
+                v-model="visualData.activeMinerGradeMode"
+                active-text="以已激活矿机数量为准"
+                inactive-text="以已兑换矿机数量为准"
+              />
+            </el-form-item>
 
             <el-row :gutter="40">
               <el-col>
                 <el-form-item :label="FIELD_MAP.rewardTiers">
                   <div class="dynamic-list-container">
                     <div v-for="(tier, index) in visualData.tiers" :key="index" class="dynamic-row">
-                      <span class="row-label">满</span>
+                      <span class="row-label">等级 {{ tier.grade || index + 1 }}：满</span>
                       <el-input-number
                         v-model="tier.minCount"
-                        :min="0"
+                        :min="1"
                         :precision="0"
                         controls-position="right"
                       />
-                      <span class="row-label">台，奖励比例</span>
+                      <span class="row-label">台，分成比例</span>
                       <el-input-number
                         v-model="tier.ratio"
                         :precision="3"
@@ -213,7 +221,7 @@
                       <el-button :icon="Delete" circle type="danger" link @click="removeTierRow(index)" />
                     </div>
                     <el-button type="primary" link :icon="Plus" @click="addTierRow" class="add-btn">
-                      添加阶梯门槛
+                      添加等级
                     </el-button>
                   </div>
                 </el-form-item>
@@ -333,10 +341,37 @@ const normalizeFragmentToCardRates = (source = {}) => {
   return normalized
 }
 
+const normalizeActiveMinerGradeMode = (value) => {
+  if (value === false || value === 'false') return false
+  if (value === true || value === 'true') return true
+  return true
+}
+
+const normalizeMinerTiers = (tiers = []) => {
+  if (!Array.isArray(tiers)) return []
+
+  return tiers
+    .map((tier) => ({
+      grade: Number(tier?.grade),
+      minCount: tier?.minCount === undefined || tier?.minCount === null || tier?.minCount === '' ? null : Number(tier.minCount),
+      ratio: tier?.ratio === undefined || tier?.ratio === null || tier?.ratio === '' ? null : Number(tier.ratio)
+    }))
+    .sort((prev, next) => {
+      const prevCount = Number.isFinite(prev.minCount) ? prev.minCount : Number.MAX_SAFE_INTEGER
+      const nextCount = Number.isFinite(next.minCount) ? next.minCount : Number.MAX_SAFE_INTEGER
+      return prevCount - nextCount
+    })
+    .map((tier, index) => ({
+      ...tier,
+      grade: index + 1
+    }))
+}
+
 const sanitizeMinerSettings = (source = {}) => {
   return {
     ...source,
-    tiers: Array.isArray(source.tiers) ? source.tiers : [],
+    activeMinerGradeMode: normalizeActiveMinerGradeMode(source.activeMinerGradeMode),
+    tiers: normalizeMinerTiers(source.tiers),
     electricityRewardTime: source.electricityRewardTime || '23:50:00',
     profitTime: source.profitTime || '23:59:00',
     electricFee: Number(source.electricFee ?? 0),
@@ -352,7 +387,7 @@ const FIELD_MAP = {
   accelerationFee: '加速包费用 (USDT)',
   profitTime: '矿机收益发放时间',
   electricityRewardTime: '电费分成结算时间',
-  rewardTiers: '下级电费分成阶梯',
+  rewardTiers: '等级与分成配置',
   minAmount: '最低提现金额(USDT)',
   feeRate: '提现手续费率',
   uPerCoin: '一个币对应多少U'
@@ -432,11 +467,13 @@ const openModal = (row = null) => {
 
 const addTierRow = () => {
   if (!visualData.value.tiers) visualData.value.tiers = []
-  visualData.value.tiers.push({ minCount: 0, ratio: 0 })
+  const maxGrade = visualData.value.tiers.reduce((max, tier) => Math.max(max, Number(tier.grade) || 0), 0)
+  visualData.value.tiers.push({ grade: maxGrade + 1, minCount: null, ratio: null })
 }
 
 const removeTierRow = (index) => {
   visualData.value.tiers.splice(index, 1)
+  visualData.value.tiers = normalizeMinerTiers(visualData.value.tiers)
 }
 
 const validateMinerDailyProfits = () => {
@@ -445,6 +482,42 @@ const validateMinerDailyProfits = () => {
     const rawValue = profits[key]
     return rawValue === undefined || rawValue === null || rawValue === '' || !Number.isFinite(Number(rawValue)) || Number(rawValue) < 0
   })
+}
+
+const validateAndNormalizeMinerTiers = () => {
+  if (typeof visualData.value.activeMinerGradeMode !== 'boolean') {
+    return '等级判断标准必须选择'
+  }
+
+  if (!Array.isArray(visualData.value.tiers) || visualData.value.tiers.length === 0) {
+    return '等级与分成配置不能为空'
+  }
+
+  const normalizedTiers = normalizeMinerTiers(visualData.value.tiers)
+  const minCountSet = new Set()
+
+  for (const tier of normalizedTiers) {
+    if (!Number.isInteger(tier.grade) || tier.grade < 1) {
+      return '等级必须大于等于 1'
+    }
+
+    if (!Number.isInteger(tier.minCount) || tier.minCount <= 0) {
+      return `等级 ${tier.grade} 的矿机数量必须大于 0`
+    }
+
+    if (!Number.isFinite(tier.ratio) || tier.ratio < 0) {
+      return `等级 ${tier.grade} 的分成比例必须大于等于 0`
+    }
+
+    if (minCountSet.has(tier.minCount)) {
+      return '矿机数量门槛不允许重复'
+    }
+
+    minCountSet.add(tier.minCount)
+  }
+
+  visualData.value.tiers = normalizedTiers
+  return ''
 }
 
 const sanitizeWithdrawSettings = (source = {}) => ({
@@ -466,6 +539,12 @@ const submitForm = async () => {
       const invalidProfitKey = validateMinerDailyProfits()
       if (invalidProfitKey) {
         ElMessage.error(`${MINER_TYPE_LABELS[invalidProfitKey]}必须填写且不能小于 0`)
+        return
+      }
+
+      const tierError = validateAndNormalizeMinerTiers()
+      if (tierError) {
+        ElMessage.error(tierError)
         return
       }
 

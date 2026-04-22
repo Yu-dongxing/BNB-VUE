@@ -68,6 +68,30 @@ export function distributeNft(data) {
   });
 }
 
+/**
+ * 设置或清除用户后台自定义等级
+ * @param {{ userId: number, customUserGrade?: number | null }} data
+ */
+export function setUserCustomGrade(data) {
+  return request({
+    url: "/admin/user/grade/set",
+    method: "post",
+    data,
+  });
+}
+
+/**
+ * 后台下发业绩 / 人工充值
+ * @param {{ userId: number, amount: string, source?: string }} data
+ */
+export function depositUserAmount(data) {
+  return request({
+    url: "/admin/user/amount/deposit",
+    method: "post",
+    data,
+  });
+}
+
 // 修改个人资料
 export function updateMyProfile(data) {
   return request({

@@ -8,6 +8,8 @@ import {
   Connection,
   Delete,
   Edit,
+  GoldMedal,
+  Money,
   Plus,
   Present,
   Refresh,
@@ -17,9 +19,11 @@ import {
 import {
   addAdminUser,
   deleteAdminUser,
+  depositUserAmount,
   distributeNft,
   getAdminUserList,
   getChainNftBalance,
+  setUserCustomGrade,
   updateAdminUser
 } from '../api/user.js'
 import { assignSpecialMiner } from '../api/miner.js'
@@ -33,6 +37,8 @@ const total = ref(0)
 const dateRange = ref([])
 const formRef = ref(null)
 const assignFormRef = ref(null)
+const gradeFormRef = ref(null)
+const depositFormRef = ref(null)
 const currentRoleKey = ref('')
 
 const queryParams = reactive({
@@ -65,6 +71,8 @@ const rowLoading = reactive({
   query: {}
 })
 
+const getResultMessage = (result, fallback) => result?.msg || result?.message || fallback
+
 const cardTypeOptions = [
   { label: '铜卡 (Copper)', value: 1 },
   { label: '银卡 (Silver)', value: 2 },
@@ -94,6 +102,28 @@ const assignSpecialDialog = reactive({
   }
 })
 
+const gradeDialog = reactive({
+  visible: false,
+  loading: false,
+  userName: '',
+  currentUserGrade: null,
+  form: {
+    userId: null,
+    customUserGrade: 0
+  }
+})
+
+const depositDialog = reactive({
+  visible: false,
+  loading: false,
+  userName: '',
+  form: {
+    userId: null,
+    amount: '',
+    source: 'v1 团队电费业绩'
+  }
+})
+
 const assignSpecialRules = {
   userId: [{ required: true, message: '用户 ID 不能为空', trigger: 'change' }],
   quantity: [
@@ -117,9 +147,52 @@ const assignSpecialRules = {
   ]
 }
 
+const gradeRules = {
+  userId: [{ required: true, message: '用户 ID 不能为空', trigger: 'change' }],
+  customUserGrade: [
+    { required: true, message: '请输入自定义等级，0 表示清除', trigger: 'change' },
+    {
+      validator: (_rule, value, callback) => {
+        if (!Number.isInteger(value) || value < 0) {
+          callback(new Error('自定义等级必须为 0 或正整数'))
+          return
+        }
+
+        callback()
+      },
+      trigger: 'change'
+    }
+  ]
+}
+
+const depositRules = {
+  userId: [{ required: true, message: '用户 ID 不能为空', trigger: 'change' }],
+  amount: [
+    { required: true, message: '请输入下发金额', trigger: 'blur' },
+    {
+      validator: (_rule, value, callback) => {
+        const amount = String(value ?? '').trim()
+        if (!amount || Number(amount) <= 0) {
+          callback(new Error('下发金额必须大于 0'))
+          return
+        }
+
+        callback()
+      },
+      trigger: 'blur'
+    }
+  ],
+  source: [{ required: true, message: '请输入资金来源', trigger: 'blur' }]
+}
+
 const isSuperAdmin = computed(() => currentRoleKey.value === 'super_admin')
 
 const normalizeResult = (res) => (typeof res === 'string' ? JSON.parse(res) : res)
+
+const formatGrade = (grade) => {
+  if (grade === undefined || grade === null || grade === '') return '-'
+  return `V${grade}`
+}
 
 const syncDateRange = () => {
   if (dateRange.value?.length === 2) {
@@ -156,7 +229,7 @@ const getList = async () => {
       return
     }
 
-    ElMessage.error(result.message || '获取用户列表失败')
+    ElMessage.error(getResultMessage(result, '获取用户列表失败'))
   } catch (error) {
     console.error(error)
     ElMessage.error('获取用户列表失败')
@@ -223,7 +296,7 @@ const submitForm = async () => {
         return
       }
 
-      ElMessage.error(result.message || '操作失败')
+      ElMessage.error(getResultMessage(result, '操作失败'))
     } catch (error) {
       console.error(error)
       ElMessage.error('操作失败')
@@ -245,7 +318,7 @@ const handleDelete = (row) => {
         return
       }
 
-      ElMessage.error(result.message || '删除失败')
+      ElMessage.error(getResultMessage(result, '删除失败'))
     } catch (error) {
       console.error(error)
       ElMessage.error('删除失败')
@@ -273,7 +346,7 @@ const handleQueryChainBalance = async (row, cardId) => {
       return
     }
 
-    ElMessage.error(result.message || '查询失败')
+    ElMessage.error(getResultMessage(result, '查询失败'))
   } catch (error) {
     console.error(error)
     ElMessage.error('查询失败')
@@ -305,7 +378,7 @@ const submitDistribute = async () => {
       return
     }
 
-    ElMessage.error(result.message || '分发卡牌失败')
+    ElMessage.error(getResultMessage(result, '分发卡牌失败'))
     distributeDialog.visible = false
   } catch (error) {
     console.error(error)
@@ -342,17 +415,98 @@ const submitAssignSpecial = async () => {
 
       if (result.code === 200) {
         assignSpecialDialog.result = result.data || null
-        ElMessage.success(result.message || '发放成功')
+        ElMessage.success(getResultMessage(result, '发放成功'))
         getList()
         return
       }
 
-      ElMessage.error(result.message || '发放特殊矿机失败')
+      ElMessage.error(getResultMessage(result, '发放特殊矿机失败'))
     } catch (error) {
       console.error(error)
       ElMessage.error('发放特殊矿机失败')
     } finally {
       assignSpecialDialog.loading = false
+    }
+  })
+}
+
+const openGradeDialog = (row) => {
+  gradeDialog.userName = row.userName
+  gradeDialog.currentUserGrade = row.userGrade ?? null
+  gradeDialog.form.userId = row.id
+  gradeDialog.form.customUserGrade = row.customUserGrade ?? 0
+  gradeDialog.visible = true
+}
+
+const submitGrade = async () => {
+  if (!gradeFormRef.value) return
+
+  await gradeFormRef.value.validate(async (valid) => {
+    if (!valid) return
+
+    gradeDialog.loading = true
+    try {
+      const result = normalizeResult(await setUserCustomGrade({
+        userId: gradeDialog.form.userId,
+        customUserGrade: gradeDialog.form.customUserGrade
+      }))
+
+      if (result.code === 200) {
+        ElMessage.success(getResultMessage(result, '设置成功'))
+        gradeDialog.visible = false
+        getList()
+        return
+      }
+
+      ElMessage.error(getResultMessage(result, '设置等级失败'))
+    } catch (error) {
+      console.error(error)
+      ElMessage.error('设置等级失败')
+    } finally {
+      gradeDialog.loading = false
+    }
+  })
+}
+
+const clearCustomGrade = () => {
+  gradeDialog.form.customUserGrade = 0
+}
+
+const openDepositDialog = (row) => {
+  depositDialog.userName = row.userName
+  depositDialog.form.userId = row.id
+  depositDialog.form.amount = ''
+  depositDialog.form.source = 'v1 团队电费业绩'
+  depositDialog.visible = true
+}
+
+const submitDeposit = async () => {
+  if (!depositFormRef.value) return
+
+  await depositFormRef.value.validate(async (valid) => {
+    if (!valid) return
+
+    depositDialog.loading = true
+    try {
+      const result = normalizeResult(await depositUserAmount({
+        userId: depositDialog.form.userId,
+        amount: String(depositDialog.form.amount).trim(),
+        source: depositDialog.form.source.trim()
+      }))
+
+      if (result.code === 200) {
+        ElMessage.success(getResultMessage(result, '充值成功'))
+        depositDialog.visible = false
+        getList()
+        return
+      }
+
+      ElMessage.error(getResultMessage(result, '下发业绩失败'))
+    } catch (error) {
+      console.error(error)
+      ElMessage.error('下发业绩失败')
+    } finally {
+      depositDialog.loading = false
     }
   })
 }
@@ -406,18 +560,32 @@ onMounted(async () => {
         <el-table-column prop="id" label="ID" width="80" />
         <el-table-column prop="userName" label="用户名" min-width="140" />
         <el-table-column prop="userWalletAddress" label="钱包地址" min-width="220" show-overflow-tooltip />
+        <el-table-column prop="userGrade" label="最终等级" width="110">
+          <template #default="{ row }">
+            <el-tag type="success" effect="plain">{{ formatGrade(row.userGrade) }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="customUserGrade" label="自定义等级" width="120">
+          <template #default="{ row }">
+            <el-tag v-if="row.customUserGrade" type="warning" effect="plain">
+              {{ formatGrade(row.customUserGrade) }}
+            </el-tag>
+            <span v-else class="muted-text">未设置</span>
+          </template>
+        </el-table-column>
         <el-table-column prop="balance" label="余额" width="150">
           <template #default="{ row }">
             <span class="balance-text">{{ row.balance }}</span>
           </template>
         </el-table-column>
         <el-table-column prop="createTime" label="注册时间" width="180" />
-        <el-table-column label="操作" width="360" fixed="right" align="center">
+        <el-table-column label="操作" width="430" fixed="right" align="center">
           <template #default="{ row }">
             <div class="user-actions">
               <div class="action-group">
                 <el-button link type="primary" :icon="Edit" @click="openDialog('edit', row)">编辑</el-button>
                 <el-button link type="danger" :icon="Delete" @click="handleDelete(row)">删除</el-button>
+                <el-button link type="warning" :icon="GoldMedal" @click="openGradeDialog(row)">设置等级</el-button>
               </div>
 
               <div class="action-divider"></div>
@@ -441,6 +609,10 @@ onMounted(async () => {
 
                 <el-button link class="btn-distribute" :icon="Present" @click="openDistributeDialog(row)">
                   分发卡牌
+                </el-button>
+
+                <el-button link class="btn-deposit" :icon="Money" @click="openDepositDialog(row)">
+                  下发业绩
                 </el-button>
 
                 <el-button
@@ -486,6 +658,72 @@ onMounted(async () => {
       <template #footer>
         <el-button @click="dialog.visible = false">取消</el-button>
         <el-button type="primary" @click="submitForm">确认</el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog v-model="gradeDialog.visible" title="设置用户等级" width="460px" append-to-body>
+      <el-form
+        ref="gradeFormRef"
+        :model="gradeDialog.form"
+        :rules="gradeRules"
+        label-width="110px"
+      >
+        <el-form-item label="目标用户">
+          <el-input :value="`${gradeDialog.userName}（ID：${gradeDialog.form.userId || '-'}）`" disabled />
+        </el-form-item>
+        <el-form-item label="当前最终等级">
+          <el-input :value="formatGrade(gradeDialog.currentUserGrade)" disabled />
+        </el-form-item>
+        <el-form-item label="自定义等级" prop="customUserGrade">
+          <el-input-number
+            v-model="gradeDialog.form.customUserGrade"
+            :min="0"
+            :precision="0"
+            style="width: 100%"
+          />
+        </el-form-item>
+        <el-alert
+          title="自定义等级填 0 表示清除；最终等级由后端在自动等级和自定义等级中取较大值。"
+          type="info"
+          show-icon
+          :closable="false"
+        />
+      </el-form>
+      <template #footer>
+        <el-button @click="gradeDialog.visible = false">取消</el-button>
+        <el-button @click="clearCustomGrade">清除自定义等级</el-button>
+        <el-button type="primary" :loading="gradeDialog.loading" @click="submitGrade">确认设置</el-button>
+      </template>
+    </el-dialog>
+
+    <el-dialog v-model="depositDialog.visible" title="下发业绩 / 人工充值" width="500px" append-to-body>
+      <el-form
+        ref="depositFormRef"
+        :model="depositDialog.form"
+        :rules="depositRules"
+        label-width="100px"
+      >
+        <el-form-item label="目标用户">
+          <el-input :value="`${depositDialog.userName}（ID：${depositDialog.form.userId || '-'}）`" disabled />
+        </el-form-item>
+        <el-form-item label="下发金额" prop="amount">
+          <el-input
+            v-model="depositDialog.form.amount"
+            placeholder="请输入金额，例如：100.000000000000000000"
+          />
+        </el-form-item>
+        <el-form-item label="资金来源" prop="source">
+          <el-input
+            v-model="depositDialog.form.source"
+            maxlength="60"
+            show-word-limit
+            placeholder="例如：v1 团队电费业绩"
+          />
+        </el-form-item>
+      </el-form>
+      <template #footer>
+        <el-button @click="depositDialog.visible = false">取消</el-button>
+        <el-button type="success" :loading="depositDialog.loading" @click="submitDeposit">确认下发</el-button>
       </template>
     </el-dialog>
 
@@ -595,6 +833,10 @@ onMounted(async () => {
   font-weight: bold;
 }
 
+.muted-text {
+  color: var(--el-text-color-secondary);
+}
+
 .user-actions {
   display: flex;
   flex-direction: column;
@@ -625,6 +867,10 @@ onMounted(async () => {
 }
 
 .btn-distribute {
+  color: var(--el-color-success);
+}
+
+.btn-deposit {
   color: var(--el-color-success);
 }
 

@@ -18,6 +18,15 @@
           <el-input v-model="queryParams.minerId" placeholder="M001..." clearable @keyup.enter="handleSearch" />
         </el-form-item>
 
+        <el-form-item label="钱包地址">
+          <el-input
+            v-model="queryParams.walletAddress"
+            placeholder="请输入用户钱包地址"
+            clearable
+            @keyup.enter="handleSearch"
+          />
+        </el-form-item>
+
         <el-form-item label="矿机类型">
           <el-select v-model="queryParams.minerType" placeholder="全部" clearable style="width: 120px">
             <el-option label="小型" value="0" />
@@ -174,6 +183,7 @@ const queryParams = reactive({
   page: 1,
   size: 10,
   minerId: '',
+  walletAddress: '',
   minerType: '',
   status: null,
   isElectricityPaid: null,
@@ -226,6 +236,7 @@ const resetQuery = () => {
     page: 1,
     size: 10,
     minerId: '',
+    walletAddress: '',
     minerType: '',
     status: null,
     isElectricityPaid: null,
