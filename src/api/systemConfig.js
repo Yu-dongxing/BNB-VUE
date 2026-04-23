@@ -9,6 +9,14 @@ export function getConfigPage(params) {
   });
 }
 
+// 根据 ID 获取配置详情
+export function getConfigDetail(id) {
+  return request({
+    url: `/admin/system/config/${id}`,
+    method: "get",
+  });
+}
+
 // 保存或更新配置
 export function saveOrUpdateConfig(data) {
   return request({
