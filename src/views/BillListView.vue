@@ -108,6 +108,12 @@ const statusOptionsTable = [
   { label: '失败', value: '2' }
 ]
 
+/**
+ *     GOLD_QUANT("GOLD_QUANT", "黄金量化"),
+    GOLD_QUANT_REWARD("GOLD_QUANT_REWARD", "黄金量化奖励分成"),
+    GOLD_QUANT_DISTRIBUTION("GOLD_QUANT_DISTRIBUTION", "黄金量化分销分成");
+
+ */
 const transTypeOptions = [
   { label: '购买', value: 'PURCHASE' },
   { label: '卖出', value: 'SELL' },
@@ -116,7 +122,10 @@ const transTypeOptions = [
   { label: '闪兑', value: 'EXCHANGE' },
   { label: '奖励', value: 'REWARD' },
   { label: '收益', value: 'PROFIT' },
-  { label: '转账', value: 'TRANSFER' }
+  { label: '转账', value: 'TRANSFER' },
+  { label: '黄金量化奖励分成', value: 'GOLD_QUANT_REWARD' },
+  { label: '黄金量化分销分成', value: 'GOLD_QUANT_DISTRIBUTION' },
+  { label: '黄金量化', value: 'GOLD_QUANT' },
 ]
 
 // --- 2. 响应式数据 ---

@@ -50,3 +50,39 @@ export function getActiveBatchInfo() {
     method: "get",
   });
 }
+
+// 查询黄金量化托管费列表
+export function getGoldQuantAccountList(data) {
+  return request({
+    url: "/admin/card/gold-quant/account/list",
+    method: "post",
+    data,
+  });
+}
+
+// 查询黄金量化窗口列表
+export function getGoldQuantWindowList(data) {
+  return request({
+    url: "/admin/card/gold-quant/window/list",
+    method: "post",
+    data,
+  });
+}
+
+// 查询黄金量化分成/分销记录
+export function getGoldQuantCommissionList(data) {
+  return request({
+    url: "/admin/card/gold-quant/commission/list",
+    method: "post",
+    data,
+  });
+}
+
+// 查询黄金量化分成统计
+export function getGoldQuantCommissionStatistics(data) {
+  return request({
+    url: "/admin/card/gold-quant/commission/statistics",
+    method: "post",
+    data,
+  });
+}

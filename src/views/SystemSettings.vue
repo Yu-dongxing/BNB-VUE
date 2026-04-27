@@ -23,6 +23,8 @@
         </template>
       </el-input>
       <el-button :icon="Refresh" @click="handleQuery">刷新列表</el-button>
+      <el-button type="warning" plain @click="openGoldQuantConfig">黄金量化参数配置</el-button>
+      <el-button type="warning" plain @click="openGoldQuantCommissionConfig">黄金量化分成规则配置</el-button>
     </div>
 
     <section class="content-panel animate-up">
@@ -82,7 +84,7 @@
           </el-col>
           <el-col :span="12">
             <el-form-item label="配置键(Key)">
-              <el-input v-model="form.configKey" :disabled="!!form.id" placeholder="UNIQUE_KEY" />
+              <el-input v-model="form.configKey" :disabled="!!form.id" placeholder="UNIQUE_KEY" @change="handleConfigKeyChange" />
             </el-form-item>
           </el-col>
         </el-row>
@@ -310,6 +312,120 @@
             </el-row>
           </div>
 
+          <div v-else-if="form.configKey === 'GOLD_QUANT_SETTINGS'" class="custom-form-box">
+            <el-divider content-position="left">黄金量化参数配置</el-divider>
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-form-item :label="FIELD_MAP.hostingFee">
+                  <el-input-number v-model="visualData.hostingFee" :precision="2" :min="0" style="width: 100%" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item :label="FIELD_MAP.windowMaintenanceFee">
+                  <el-input-number v-model="visualData.windowMaintenanceFee" :precision="2" :min="0" style="width: 100%" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item :label="FIELD_MAP.hostingDays">
+                  <el-input-number v-model="visualData.hostingDays" :precision="0" :min="1" style="width: 100%" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item :label="FIELD_MAP.maintenanceDays">
+                  <el-input-number v-model="visualData.maintenanceDays" :precision="0" :min="1" style="width: 100%" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item :label="FIELD_MAP.minerThreshold">
+                  <el-input-number v-model="visualData.minerThreshold" :precision="0" :min="0" style="width: 100%" />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item :label="FIELD_MAP.maxWindowCount">
+                  <el-input-number v-model="visualData.maxWindowCount" :precision="0" :min="1" style="width: 100%" />
+                </el-form-item>
+              </el-col>
+            </el-row>
+          </div>
+
+          <div v-else-if="form.configKey === 'GOLD_QUANT_COMMISSION_SETTINGS'" class="custom-form-box">
+            <el-divider content-position="left">奖励等级规则</el-divider>
+            <div class="dynamic-list-container">
+              <div v-for="(item, index) in visualData.rewardLevels" :key="`reward-level-${index}`" class="dynamic-row">
+                <span class="row-label">V</span>
+                <el-input-number v-model="item.level" :min="1" :precision="0" controls-position="right" />
+                <span class="row-label">直属有效购买人数</span>
+                <el-input-number
+                  v-model="item.directValidBuyerCount"
+                  :min="0"
+                  :precision="0"
+                  controls-position="right"
+                />
+                <el-button :icon="Delete" circle type="danger" link @click="removeGoldQuantRewardLevel(index)" />
+              </div>
+              <el-button type="primary" link :icon="Plus" @click="addGoldQuantRewardLevel" class="add-btn">
+                添加奖励等级
+              </el-button>
+            </div>
+
+            <el-divider content-position="left">奖励分成代数规则</el-divider>
+            <div class="dynamic-list-container">
+              <div v-for="(item, index) in visualData.rewardRules" :key="`reward-rule-${index}`" class="dynamic-row">
+                <span class="row-label">V</span>
+                <el-input-number v-model="item.level" :min="1" :precision="0" controls-position="right" />
+                <span class="row-label">第</span>
+                <el-input-number v-model="item.minGeneration" :min="1" :precision="0" controls-position="right" />
+                <span class="row-label">至</span>
+                <el-input-number
+                  v-model="item.maxGeneration"
+                  :min="1"
+                  :precision="0"
+                  placeholder="空为无上限"
+                  controls-position="right"
+                />
+                <span class="row-label">代，比例</span>
+                <el-input-number v-model="item.ratio" :precision="4" :step="0.01" :min="0" :max="1" />
+                <el-button :icon="Delete" circle type="danger" link @click="removeGoldQuantRewardRule(index)" />
+              </div>
+              <el-button type="primary" link :icon="Plus" @click="addGoldQuantRewardRule" class="add-btn">
+                添加奖励规则
+              </el-button>
+            </div>
+
+            <el-divider content-position="left">分销等级规则</el-divider>
+            <el-form-item :label="FIELD_MAP.distributionMaxGeneration">
+              <el-input-number
+                v-model="visualData.distributionMaxGeneration"
+                :min="1"
+                :precision="0"
+                controls-position="right"
+              />
+            </el-form-item>
+            <div class="dynamic-list-container">
+              <div
+                v-for="(item, index) in visualData.distributionLevels"
+                :key="`distribution-level-${index}`"
+                class="dynamic-row"
+              >
+                <span class="row-label">V</span>
+                <el-input-number v-model="item.level" :min="1" :precision="0" controls-position="right" />
+                <span class="row-label">团队有效窗口数</span>
+                <el-input-number
+                  v-model="item.teamValidWindowCount"
+                  :min="0"
+                  :precision="0"
+                  controls-position="right"
+                />
+                <span class="row-label">比例</span>
+                <el-input-number v-model="item.ratio" :precision="4" :step="0.01" :min="0" :max="1" />
+                <el-button :icon="Delete" circle type="danger" link @click="removeGoldQuantDistributionLevel(index)" />
+              </div>
+              <el-button type="primary" link :icon="Plus" @click="addGoldQuantDistributionLevel" class="add-btn">
+                添加分销等级
+              </el-button>
+            </div>
+          </div>
+
           <div v-else>
             <el-form-item label="配置值内容(JSON/Text)">
               <el-input v-model="form.configValue" type="textarea" :rows="10" placeholder="请输入内容..." />
@@ -355,6 +471,42 @@ const DEFAULT_WITHDRAW_SETTINGS = {
   minAmount: 10,
   feeRate: 0.05,
   uPerCoin: 1
+}
+const DEFAULT_GOLD_QUANT_SETTINGS = {
+  hostingFee: 40,
+  windowMaintenanceFee: 200,
+  hostingDays: 30,
+  maintenanceDays: 30,
+  minerThreshold: 10,
+  maxWindowCount: 10
+}
+const DEFAULT_GOLD_QUANT_COMMISSION_SETTINGS = {
+  rewardLevels: [
+    { level: 1, directValidBuyerCount: 1 },
+    { level: 2, directValidBuyerCount: 2 },
+    { level: 3, directValidBuyerCount: 3 },
+    { level: 4, directValidBuyerCount: 4 },
+    { level: 5, directValidBuyerCount: 5 }
+  ],
+  rewardRules: [
+    { level: 1, minGeneration: 1, maxGeneration: 1, ratio: 0.05 },
+    { level: 2, minGeneration: 2, maxGeneration: 2, ratio: 0.03 },
+    { level: 3, minGeneration: 3, maxGeneration: 10, ratio: 0.01 },
+    { level: 4, minGeneration: 11, maxGeneration: 14, ratio: 0.03 },
+    { level: 5, minGeneration: 15, maxGeneration: null, ratio: 0.05 }
+  ],
+  distributionLevels: [
+    { level: 1, teamValidWindowCount: 50, ratio: 0.15 },
+    { level: 2, teamValidWindowCount: 100, ratio: 0.175 },
+    { level: 3, teamValidWindowCount: 300, ratio: 0.2 },
+    { level: 4, teamValidWindowCount: 500, ratio: 0.225 },
+    { level: 5, teamValidWindowCount: 1000, ratio: 0.24 },
+    { level: 6, teamValidWindowCount: 2000, ratio: 0.255 },
+    { level: 7, teamValidWindowCount: 5000, ratio: 0.27 },
+    { level: 8, teamValidWindowCount: 10000, ratio: 0.285 },
+    { level: 9, teamValidWindowCount: 20000, ratio: 0.3 }
+  ],
+  distributionMaxGeneration: 15
 }
 const MINER_TYPE_LABELS = {
   '0': '小型矿机日收益',
@@ -512,10 +664,17 @@ const FIELD_MAP = {
   electricityGenerationPerformanceRatios: '代数业绩比例配置',
   minAmount: '最低提现金额(USDT)',
   feeRate: '提现手续费率',
-  uPerCoin: '一个币对应多少U'
+  uPerCoin: '一个币对应多少U',
+  hostingFee: '托管费金额(USDT)',
+  windowMaintenanceFee: '单个窗口维护费(USDT)',
+  hostingDays: '托管费延长天数',
+  maintenanceDays: '维护费延长天数',
+  minerThreshold: '新购窗口最低矿机数',
+  maxWindowCount: '每用户最多窗口数',
+  distributionMaxGeneration: '分销最大计算代数'
 }
 
-const VISUAL_KEYS = ['MINER_SYSTEM_SETTINGS', 'WITHDRAW_SETTINGS']
+const VISUAL_KEYS = ['MINER_SYSTEM_SETTINGS', 'WITHDRAW_SETTINGS', 'GOLD_QUANT_SETTINGS', 'GOLD_QUANT_COMMISSION_SETTINGS']
 
 const loading = ref(false)
 const showModal = ref(false)
@@ -566,12 +725,23 @@ const openModal = (row = null) => {
 
         if (form.configKey === 'MINER_SYSTEM_SETTINGS') {
           visualData.value = sanitizeMinerSettings(parsed)
+        } else if (form.configKey === 'GOLD_QUANT_SETTINGS') {
+          visualData.value = sanitizeGoldQuantSettings(parsed)
+        } else if (form.configKey === 'GOLD_QUANT_COMMISSION_SETTINGS') {
+          visualData.value = sanitizeGoldQuantCommissionSettings(parsed)
         } else {
           visualData.value = sanitizeWithdrawSettings(parsed)
         }
       } catch (error) {
         console.error('JSON 解析失败:', error)
-        visualData.value = form.configKey === 'MINER_SYSTEM_SETTINGS' ? sanitizeMinerSettings() : sanitizeWithdrawSettings()
+        visualData.value =
+          form.configKey === 'MINER_SYSTEM_SETTINGS'
+            ? sanitizeMinerSettings()
+            : form.configKey === 'GOLD_QUANT_SETTINGS'
+              ? sanitizeGoldQuantSettings()
+              : form.configKey === 'GOLD_QUANT_COMMISSION_SETTINGS'
+                ? sanitizeGoldQuantCommissionSettings()
+                : sanitizeWithdrawSettings()
       }
     }
   } else {
@@ -586,6 +756,60 @@ const openModal = (row = null) => {
   }
 
   showModal.value = true
+}
+
+const openGoldQuantConfig = () => {
+  const existingConfig = configList.value.find((item) => item.configKey === 'GOLD_QUANT_SETTINGS')
+  if (existingConfig) {
+    openModal(existingConfig)
+    return
+  }
+
+  Object.assign(form, {
+    id: null,
+    configName: '黄金量化参数配置',
+    configKey: 'GOLD_QUANT_SETTINGS',
+    configValue: '',
+    remark: '托管费、窗口维护费、矿机门槛、窗口数量上限'
+  })
+  visualData.value = sanitizeGoldQuantSettings()
+  showModal.value = true
+}
+
+const openGoldQuantCommissionConfig = () => {
+  const existingConfig = configList.value.find((item) => item.configKey === 'GOLD_QUANT_COMMISSION_SETTINGS')
+  if (existingConfig) {
+    openModal(existingConfig)
+    return
+  }
+
+  Object.assign(form, {
+    id: null,
+    configName: '黄金量化双分成规则配置',
+    configKey: 'GOLD_QUANT_COMMISSION_SETTINGS',
+    configValue: '',
+    remark: '奖励分成、分销分成等级比例及分销最大代数'
+  })
+  visualData.value = sanitizeGoldQuantCommissionSettings()
+  showModal.value = true
+}
+
+const handleConfigKeyChange = () => {
+  if (form.id) return
+
+  if (form.configKey === 'GOLD_QUANT_SETTINGS') {
+    visualData.value = sanitizeGoldQuantSettings()
+    form.configName = form.configName || '黄金量化参数配置'
+    form.remark = form.remark || '托管费、窗口维护费、矿机门槛、窗口数量上限'
+  } else if (form.configKey === 'GOLD_QUANT_COMMISSION_SETTINGS') {
+    visualData.value = sanitizeGoldQuantCommissionSettings()
+    form.configName = form.configName || '黄金量化双分成规则配置'
+    form.remark = form.remark || '奖励分成、分销分成等级比例及分销最大代数'
+  } else if (form.configKey === 'WITHDRAW_SETTINGS') {
+    visualData.value = sanitizeWithdrawSettings()
+  } else if (form.configKey === 'MINER_SYSTEM_SETTINGS') {
+    visualData.value = sanitizeMinerSettings()
+  }
 }
 
 const addTierRow = () => {
@@ -615,6 +839,38 @@ const addGenerationRatioRow = () => {
 
 const removeGenerationRatioRow = (index) => {
   visualData.value.electricityGenerationPerformanceRatios.splice(index, 1)
+}
+
+const getNextLevel = (list = []) => list.reduce((max, item) => Math.max(max, Number(item.level) || 0), 0) + 1
+
+const addGoldQuantRewardLevel = () => {
+  if (!Array.isArray(visualData.value.rewardLevels)) visualData.value.rewardLevels = []
+  const nextLevel = getNextLevel(visualData.value.rewardLevels)
+  visualData.value.rewardLevels.push({ level: nextLevel, directValidBuyerCount: nextLevel })
+}
+
+const removeGoldQuantRewardLevel = (index) => {
+  visualData.value.rewardLevels.splice(index, 1)
+}
+
+const addGoldQuantRewardRule = () => {
+  if (!Array.isArray(visualData.value.rewardRules)) visualData.value.rewardRules = []
+  const nextLevel = getNextLevel(visualData.value.rewardRules)
+  visualData.value.rewardRules.push({ level: nextLevel, minGeneration: nextLevel, maxGeneration: nextLevel, ratio: 0 })
+}
+
+const removeGoldQuantRewardRule = (index) => {
+  visualData.value.rewardRules.splice(index, 1)
+}
+
+const addGoldQuantDistributionLevel = () => {
+  if (!Array.isArray(visualData.value.distributionLevels)) visualData.value.distributionLevels = []
+  const nextLevel = getNextLevel(visualData.value.distributionLevels)
+  visualData.value.distributionLevels.push({ level: nextLevel, teamValidWindowCount: 0, ratio: 0 })
+}
+
+const removeGoldQuantDistributionLevel = (index) => {
+  visualData.value.distributionLevels.splice(index, 1)
 }
 
 const validateMinerDailyProfits = () => {
@@ -701,6 +957,125 @@ const sanitizeWithdrawSettings = (source = {}) => ({
   uPerCoin: Number(source.uPerCoin ?? DEFAULT_WITHDRAW_SETTINGS.uPerCoin)
 })
 
+const sanitizeGoldQuantSettings = (source = {}) => ({
+  hostingFee: Number(source.hostingFee ?? DEFAULT_GOLD_QUANT_SETTINGS.hostingFee),
+  windowMaintenanceFee: Number(source.windowMaintenanceFee ?? DEFAULT_GOLD_QUANT_SETTINGS.windowMaintenanceFee),
+  hostingDays: Number(source.hostingDays ?? DEFAULT_GOLD_QUANT_SETTINGS.hostingDays),
+  maintenanceDays: Number(source.maintenanceDays ?? DEFAULT_GOLD_QUANT_SETTINGS.maintenanceDays),
+  minerThreshold: Number(source.minerThreshold ?? DEFAULT_GOLD_QUANT_SETTINGS.minerThreshold),
+  maxWindowCount: Number(source.maxWindowCount ?? DEFAULT_GOLD_QUANT_SETTINGS.maxWindowCount)
+})
+
+const sanitizeGoldQuantCommissionSettings = (source = {}) => {
+  const fallback = DEFAULT_GOLD_QUANT_COMMISSION_SETTINGS
+  return {
+    rewardLevels: (Array.isArray(source.rewardLevels) && source.rewardLevels.length ? source.rewardLevels : fallback.rewardLevels)
+      .map((item) => ({
+        level: Number(item.level),
+        directValidBuyerCount: Number(item.directValidBuyerCount)
+      }))
+      .sort((prev, next) => prev.level - next.level),
+    rewardRules: (Array.isArray(source.rewardRules) && source.rewardRules.length ? source.rewardRules : fallback.rewardRules)
+      .map((item) => ({
+        level: Number(item.level),
+        minGeneration: Number(item.minGeneration),
+        maxGeneration:
+          item.maxGeneration === null || item.maxGeneration === undefined || item.maxGeneration === ''
+            ? null
+            : Number(item.maxGeneration),
+        ratio: Number(item.ratio)
+      }))
+      .sort((prev, next) => prev.minGeneration - next.minGeneration),
+    distributionLevels: (
+      Array.isArray(source.distributionLevels) && source.distributionLevels.length
+        ? source.distributionLevels
+        : fallback.distributionLevels
+    )
+      .map((item) => ({
+        level: Number(item.level),
+        teamValidWindowCount: Number(item.teamValidWindowCount),
+        ratio: Number(item.ratio)
+      }))
+      .sort((prev, next) => prev.level - next.level),
+    distributionMaxGeneration: Number(source.distributionMaxGeneration ?? fallback.distributionMaxGeneration)
+  }
+}
+
+const validatePositiveNumber = (value, label, allowZero = false) => {
+  if (!Number.isFinite(value) || (allowZero ? value < 0 : value <= 0)) {
+    return `${label}必须${allowZero ? '大于等于' : '大于'} 0`
+  }
+  return ''
+}
+
+const validatePositiveInteger = (value, label, allowZero = false) => {
+  if (!Number.isInteger(value) || (allowZero ? value < 0 : value <= 0)) {
+    return `${label}必须为${allowZero ? '大于等于' : '大于'} 0 的整数`
+  }
+  return ''
+}
+
+const validateUniqueIntegerField = (list, field, label) => {
+  const values = new Set()
+  for (const item of list) {
+    if (!Number.isInteger(item[field]) || item[field] <= 0) return `${label}必须为大于 0 的整数`
+    if (values.has(item[field])) return `${label}不允许重复`
+    values.add(item[field])
+  }
+  return ''
+}
+
+const validateRatio = (value, label) => {
+  if (!Number.isFinite(value) || value < 0 || value > 1) {
+    return `${label}必须在 0 到 1 之间`
+  }
+  return ''
+}
+
+const validateAndNormalizeGoldQuantCommissionSettings = () => {
+  const nextSettings = sanitizeGoldQuantCommissionSettings(visualData.value)
+
+  if (!nextSettings.rewardLevels.length) return '奖励等级规则不能为空'
+  if (!nextSettings.rewardRules.length) return '奖励分成代数规则不能为空'
+  if (!nextSettings.distributionLevels.length) return '分销等级规则不能为空'
+
+  let validationMessage =
+    validateUniqueIntegerField(nextSettings.rewardLevels, 'level', '奖励等级') ||
+    validateUniqueIntegerField(nextSettings.rewardRules, 'level', '奖励规则等级') ||
+    validateUniqueIntegerField(nextSettings.distributionLevels, 'level', '分销等级') ||
+    validatePositiveInteger(nextSettings.distributionMaxGeneration, '分销最大计算代数')
+
+  if (validationMessage) return validationMessage
+
+  for (const item of nextSettings.rewardLevels) {
+    validationMessage = validatePositiveInteger(item.directValidBuyerCount, `V${item.level} 直属有效购买人数`, true)
+    if (validationMessage) return validationMessage
+  }
+
+  for (const item of nextSettings.rewardRules) {
+    validationMessage =
+      validatePositiveInteger(item.minGeneration, `V${item.level} 最小代数`) ||
+      (item.maxGeneration === null ? '' : validatePositiveInteger(item.maxGeneration, `V${item.level} 最大代数`)) ||
+      validateRatio(item.ratio, `V${item.level} 奖励分成比例`)
+
+    if (validationMessage) return validationMessage
+    if (item.maxGeneration !== null && item.maxGeneration < item.minGeneration) {
+      return `V${item.level} 最大代数不能小于最小代数`
+    }
+  }
+
+  for (const item of nextSettings.distributionLevels) {
+    validationMessage =
+      validatePositiveInteger(item.teamValidWindowCount, `V${item.level} 团队有效窗口数`, true) ||
+      validateRatio(item.ratio, `V${item.level} 分销比例`)
+
+    if (validationMessage) return validationMessage
+  }
+
+  visualData.value = nextSettings
+  return ''
+}
+
 const submitForm = async () => {
   if (isVisualMode.value) {
     if (form.configKey === 'MINER_SYSTEM_SETTINGS') {
@@ -742,6 +1117,28 @@ const submitForm = async () => {
       }
 
       visualData.value = nextWithdrawSettings
+    } else if (form.configKey === 'GOLD_QUANT_SETTINGS') {
+      const nextGoldQuantSettings = sanitizeGoldQuantSettings(visualData.value)
+      const validationMessage =
+        validatePositiveNumber(nextGoldQuantSettings.hostingFee, '托管费金额', true) ||
+        validatePositiveNumber(nextGoldQuantSettings.windowMaintenanceFee, '单个窗口维护费', true) ||
+        validatePositiveInteger(nextGoldQuantSettings.hostingDays, '托管费延长天数') ||
+        validatePositiveInteger(nextGoldQuantSettings.maintenanceDays, '维护费延长天数') ||
+        validatePositiveInteger(nextGoldQuantSettings.minerThreshold, '新购窗口最低矿机数', true) ||
+        validatePositiveInteger(nextGoldQuantSettings.maxWindowCount, '每用户最多窗口数')
+
+      if (validationMessage) {
+        ElMessage.error(validationMessage)
+        return
+      }
+
+      visualData.value = nextGoldQuantSettings
+    } else if (form.configKey === 'GOLD_QUANT_COMMISSION_SETTINGS') {
+      const validationMessage = validateAndNormalizeGoldQuantCommissionSettings()
+      if (validationMessage) {
+        ElMessage.error(validationMessage)
+        return
+      }
     }
 
     form.configValue = JSON.stringify(visualData.value)
