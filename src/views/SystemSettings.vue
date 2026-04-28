@@ -449,65 +449,6 @@ import { ElMessage } from 'element-plus'
 import * as configApi from '../api/systemConfig'
 import { getCurrentAdminInfo } from '../api/rbac'
 
-const DEFAULT_FRAGMENT_TO_CARD_RATE = 100
-const DEFAULT_FRAGMENT_TO_CARD_RATES = {
-  1: 100,
-  2: 150,
-  3: 200
-}
-const DEFAULT_MINER_DAILY_PROFITS = {
-  '0': 0,
-  '1': 0,
-  '2': 0,
-  '3': 0
-}
-const DEFAULT_ELECTRICITY_GENERATION_PERFORMANCE_RATIOS = [
-  { generation: 1, performanceRatio: 1 },
-  { generation: 2, performanceRatio: 0.7 },
-  { generation: 3, performanceRatio: 0.5 },
-  { generation: 4, performanceRatio: 0.2 }
-]
-const DEFAULT_WITHDRAW_SETTINGS = {
-  minAmount: 10,
-  feeRate: 0.05,
-  uPerCoin: 1
-}
-const DEFAULT_GOLD_QUANT_SETTINGS = {
-  hostingFee: 40,
-  windowMaintenanceFee: 200,
-  hostingDays: 30,
-  maintenanceDays: 30,
-  minerThreshold: 10,
-  maxWindowCount: 10
-}
-const DEFAULT_GOLD_QUANT_COMMISSION_SETTINGS = {
-  rewardLevels: [
-    { level: 1, directValidBuyerCount: 1 },
-    { level: 2, directValidBuyerCount: 2 },
-    { level: 3, directValidBuyerCount: 3 },
-    { level: 4, directValidBuyerCount: 4 },
-    { level: 5, directValidBuyerCount: 5 }
-  ],
-  rewardRules: [
-    { level: 1, minGeneration: 1, maxGeneration: 1, ratio: 0.05 },
-    { level: 2, minGeneration: 2, maxGeneration: 2, ratio: 0.03 },
-    { level: 3, minGeneration: 3, maxGeneration: 10, ratio: 0.01 },
-    { level: 4, minGeneration: 11, maxGeneration: 14, ratio: 0.03 },
-    { level: 5, minGeneration: 15, maxGeneration: null, ratio: 0.05 }
-  ],
-  distributionLevels: [
-    { level: 1, teamValidWindowCount: 50, ratio: 0.15 },
-    { level: 2, teamValidWindowCount: 100, ratio: 0.175 },
-    { level: 3, teamValidWindowCount: 300, ratio: 0.2 },
-    { level: 4, teamValidWindowCount: 500, ratio: 0.225 },
-    { level: 5, teamValidWindowCount: 1000, ratio: 0.24 },
-    { level: 6, teamValidWindowCount: 2000, ratio: 0.255 },
-    { level: 7, teamValidWindowCount: 5000, ratio: 0.27 },
-    { level: 8, teamValidWindowCount: 10000, ratio: 0.285 },
-    { level: 9, teamValidWindowCount: 20000, ratio: 0.3 }
-  ],
-  distributionMaxGeneration: 15
-}
 const MINER_TYPE_LABELS = {
   '0': '小型矿机日收益',
   '1': '中型矿机日收益',
@@ -518,10 +459,16 @@ const MINER_TYPE_LABELS = {
 const truncateToSixDecimals = (value) => {
   const numericValue = Number(value)
   if (!Number.isFinite(numericValue) || numericValue < 0) {
-    return 0
+    return null
   }
 
   return Math.floor(numericValue * 1000000) / 1000000
+}
+
+const toNullableNumber = (value) => {
+  if (value === undefined || value === null || value === '') return null
+  const numericValue = Number(value)
+  return Number.isFinite(numericValue) ? numericValue : null
 }
 
 const normalizeMinerDailyProfits = (source = {}) => {
@@ -537,25 +484,20 @@ const normalizeMinerDailyProfits = (source = {}) => {
 
   ;['0', '1', '2', '3'].forEach((minerType) => {
     const current = rawProfits[minerType] ?? rawProfits[Number(minerType)]
-    normalized[minerType] =
-      current === undefined || current === null || current === ''
-        ? DEFAULT_MINER_DAILY_PROFITS[minerType]
-        : truncateToSixDecimals(current)
+    normalized[minerType] = current === undefined || current === null || current === '' ? null : truncateToSixDecimals(current)
   })
 
   return normalized
 }
 
 const normalizeFragmentToCardRates = (source = {}) => {
-  const fallbackRate = Number(source.fragmentToCardRate ?? DEFAULT_FRAGMENT_TO_CARD_RATE)
   const rawRates = source.fragmentToCardRates || {}
   const normalized = {}
 
   ;[1, 2, 3].forEach((cardId) => {
     const current = rawRates[cardId] ?? rawRates[String(cardId)]
     const parsed = Number(current)
-    const defaultValue = DEFAULT_FRAGMENT_TO_CARD_RATES[cardId] ?? fallbackRate
-    normalized[cardId] = Number.isFinite(parsed) && parsed > 0 ? parsed : defaultValue
+    normalized[cardId] = Number.isFinite(parsed) && parsed > 0 ? parsed : null
   })
 
   return normalized
@@ -564,7 +506,7 @@ const normalizeFragmentToCardRates = (source = {}) => {
 const normalizeActiveMinerGradeMode = (value) => {
   if (value === false || value === 'false') return false
   if (value === true || value === 'true') return true
-  return true
+  return null
 }
 
 const parseConfigValue = (value) => {
@@ -584,7 +526,7 @@ const parseConfigValue = (value) => {
 const normalizeSmallAreaUnlimitedElectricityReward = (value) => {
   if (value === false || value === 'false' || value === 0 || value === '0') return false
   if (value === true || value === 'true' || value === 1 || value === '1') return true
-  return false
+  return null
 }
 
 const normalizeMinerTiers = (tiers = []) => {
@@ -614,17 +556,17 @@ const normalizeMinerTiers = (tiers = []) => {
     })
     .map((tier, index) => ({
       ...tier,
-      grade: Number.isInteger(tier.grade) && tier.grade > 0 ? tier.grade : index + 1
+      grade: Number.isInteger(tier.grade) && tier.grade > 0 ? tier.grade : null
     }))
 }
 
 const normalizeGenerationPerformanceRatios = (ratios = []) => {
-  const source = Array.isArray(ratios) && ratios.length ? ratios : DEFAULT_ELECTRICITY_GENERATION_PERFORMANCE_RATIOS
+  const source = Array.isArray(ratios) ? ratios : []
 
   return source
     .map((item, index) => ({
       generation:
-        Number.isInteger(Number(item?.generation)) && Number(item.generation) > 0 ? Number(item.generation) : index + 1,
+        Number.isInteger(Number(item?.generation)) && Number(item.generation) > 0 ? Number(item.generation) : null,
       performanceRatio:
         item?.performanceRatio === undefined || item?.performanceRatio === null || item?.performanceRatio === ''
           ? null
@@ -644,12 +586,12 @@ const sanitizeMinerSettings = (source = {}) => {
     electricityGenerationPerformanceRatios: normalizeGenerationPerformanceRatios(
       source.electricityGenerationPerformanceRatios
     ),
-    electricityRewardTime: source.electricityRewardTime || '23:50:00',
-    profitTime: source.profitTime || '23:59:00',
-    electricFee: Number(source.electricFee ?? 0),
-    accelerationFee: Number(source.accelerationFee ?? 0),
+    electricityRewardTime: source.electricityRewardTime || '',
+    profitTime: source.profitTime || '',
+    electricFee: toNullableNumber(source.electricFee),
+    accelerationFee: toNullableNumber(source.accelerationFee),
     minerDailyProfits: normalizeMinerDailyProfits(source),
-    fragmentToCardRate: source.fragmentToCardRate ?? DEFAULT_FRAGMENT_TO_CARD_RATE,
+    fragmentToCardRate: toNullableNumber(source.fragmentToCardRate),
     fragmentToCardRates: normalizeFragmentToCardRates(source)
   }
 }
@@ -746,13 +688,7 @@ const openModal = (row = null) => {
     }
   } else {
     Object.assign(form, { id: null, configName: '', configKey: '', configValue: '', remark: '' })
-    visualData.value = sanitizeMinerSettings({
-      distributionRatios: {},
-      electricFee: 0,
-      accelerationFee: 0,
-      smallAreaUnlimitedElectricityReward: false,
-      electricityGenerationPerformanceRatios: DEFAULT_ELECTRICITY_GENERATION_PERFORMANCE_RATIOS
-    })
+    visualData.value = sanitizeMinerSettings()
   }
 
   showModal.value = true
@@ -814,8 +750,7 @@ const handleConfigKeyChange = () => {
 
 const addTierRow = () => {
   if (!visualData.value.tiers) visualData.value.tiers = []
-  const maxGrade = visualData.value.tiers.reduce((max, tier) => Math.max(max, Number(tier.grade) || 0), 0)
-  visualData.value.tiers.push({ grade: maxGrade + 1, minCount: null, ratio: null, rewardRatio: null })
+  visualData.value.tiers.push({ grade: null, minCount: null, ratio: null, rewardRatio: null })
 }
 
 const removeTierRow = (index) => {
@@ -827,12 +762,8 @@ const addGenerationRatioRow = () => {
   if (!Array.isArray(visualData.value.electricityGenerationPerformanceRatios)) {
     visualData.value.electricityGenerationPerformanceRatios = []
   }
-  const maxGeneration = visualData.value.electricityGenerationPerformanceRatios.reduce(
-    (max, item) => Math.max(max, Number(item.generation) || 0),
-    0
-  )
   visualData.value.electricityGenerationPerformanceRatios.push({
-    generation: maxGeneration + 1,
+    generation: null,
     performanceRatio: null
   })
 }
@@ -841,12 +772,9 @@ const removeGenerationRatioRow = (index) => {
   visualData.value.electricityGenerationPerformanceRatios.splice(index, 1)
 }
 
-const getNextLevel = (list = []) => list.reduce((max, item) => Math.max(max, Number(item.level) || 0), 0) + 1
-
 const addGoldQuantRewardLevel = () => {
   if (!Array.isArray(visualData.value.rewardLevels)) visualData.value.rewardLevels = []
-  const nextLevel = getNextLevel(visualData.value.rewardLevels)
-  visualData.value.rewardLevels.push({ level: nextLevel, directValidBuyerCount: nextLevel })
+  visualData.value.rewardLevels.push({ level: null, directValidBuyerCount: null })
 }
 
 const removeGoldQuantRewardLevel = (index) => {
@@ -855,8 +783,7 @@ const removeGoldQuantRewardLevel = (index) => {
 
 const addGoldQuantRewardRule = () => {
   if (!Array.isArray(visualData.value.rewardRules)) visualData.value.rewardRules = []
-  const nextLevel = getNextLevel(visualData.value.rewardRules)
-  visualData.value.rewardRules.push({ level: nextLevel, minGeneration: nextLevel, maxGeneration: nextLevel, ratio: 0 })
+  visualData.value.rewardRules.push({ level: null, minGeneration: null, maxGeneration: null, ratio: null })
 }
 
 const removeGoldQuantRewardRule = (index) => {
@@ -865,8 +792,7 @@ const removeGoldQuantRewardRule = (index) => {
 
 const addGoldQuantDistributionLevel = () => {
   if (!Array.isArray(visualData.value.distributionLevels)) visualData.value.distributionLevels = []
-  const nextLevel = getNextLevel(visualData.value.distributionLevels)
-  visualData.value.distributionLevels.push({ level: nextLevel, teamValidWindowCount: 0, ratio: 0 })
+  visualData.value.distributionLevels.push({ level: null, teamValidWindowCount: null, ratio: null })
 }
 
 const removeGoldQuantDistributionLevel = (index) => {
@@ -952,52 +878,47 @@ const validateAndNormalizeGenerationPerformanceRatios = () => {
 }
 
 const sanitizeWithdrawSettings = (source = {}) => ({
-  minAmount: Number(source.minAmount ?? DEFAULT_WITHDRAW_SETTINGS.minAmount),
-  feeRate: Number(source.feeRate ?? DEFAULT_WITHDRAW_SETTINGS.feeRate),
-  uPerCoin: Number(source.uPerCoin ?? DEFAULT_WITHDRAW_SETTINGS.uPerCoin)
+  minAmount: toNullableNumber(source.minAmount),
+  feeRate: toNullableNumber(source.feeRate),
+  uPerCoin: toNullableNumber(source.uPerCoin)
 })
 
 const sanitizeGoldQuantSettings = (source = {}) => ({
-  hostingFee: Number(source.hostingFee ?? DEFAULT_GOLD_QUANT_SETTINGS.hostingFee),
-  windowMaintenanceFee: Number(source.windowMaintenanceFee ?? DEFAULT_GOLD_QUANT_SETTINGS.windowMaintenanceFee),
-  hostingDays: Number(source.hostingDays ?? DEFAULT_GOLD_QUANT_SETTINGS.hostingDays),
-  maintenanceDays: Number(source.maintenanceDays ?? DEFAULT_GOLD_QUANT_SETTINGS.maintenanceDays),
-  minerThreshold: Number(source.minerThreshold ?? DEFAULT_GOLD_QUANT_SETTINGS.minerThreshold),
-  maxWindowCount: Number(source.maxWindowCount ?? DEFAULT_GOLD_QUANT_SETTINGS.maxWindowCount)
+  hostingFee: toNullableNumber(source.hostingFee),
+  windowMaintenanceFee: toNullableNumber(source.windowMaintenanceFee),
+  hostingDays: toNullableNumber(source.hostingDays),
+  maintenanceDays: toNullableNumber(source.maintenanceDays),
+  minerThreshold: toNullableNumber(source.minerThreshold),
+  maxWindowCount: toNullableNumber(source.maxWindowCount)
 })
 
 const sanitizeGoldQuantCommissionSettings = (source = {}) => {
-  const fallback = DEFAULT_GOLD_QUANT_COMMISSION_SETTINGS
   return {
-    rewardLevels: (Array.isArray(source.rewardLevels) && source.rewardLevels.length ? source.rewardLevels : fallback.rewardLevels)
+    rewardLevels: (Array.isArray(source.rewardLevels) ? source.rewardLevels : [])
       .map((item) => ({
-        level: Number(item.level),
-        directValidBuyerCount: Number(item.directValidBuyerCount)
+        level: toNullableNumber(item.level),
+        directValidBuyerCount: toNullableNumber(item.directValidBuyerCount)
       }))
       .sort((prev, next) => prev.level - next.level),
-    rewardRules: (Array.isArray(source.rewardRules) && source.rewardRules.length ? source.rewardRules : fallback.rewardRules)
+    rewardRules: (Array.isArray(source.rewardRules) ? source.rewardRules : [])
       .map((item) => ({
-        level: Number(item.level),
-        minGeneration: Number(item.minGeneration),
+        level: toNullableNumber(item.level),
+        minGeneration: toNullableNumber(item.minGeneration),
         maxGeneration:
           item.maxGeneration === null || item.maxGeneration === undefined || item.maxGeneration === ''
             ? null
-            : Number(item.maxGeneration),
-        ratio: Number(item.ratio)
+            : toNullableNumber(item.maxGeneration),
+        ratio: toNullableNumber(item.ratio)
       }))
       .sort((prev, next) => prev.minGeneration - next.minGeneration),
-    distributionLevels: (
-      Array.isArray(source.distributionLevels) && source.distributionLevels.length
-        ? source.distributionLevels
-        : fallback.distributionLevels
-    )
+    distributionLevels: (Array.isArray(source.distributionLevels) ? source.distributionLevels : [])
       .map((item) => ({
-        level: Number(item.level),
-        teamValidWindowCount: Number(item.teamValidWindowCount),
-        ratio: Number(item.ratio)
+        level: toNullableNumber(item.level),
+        teamValidWindowCount: toNullableNumber(item.teamValidWindowCount),
+        ratio: toNullableNumber(item.ratio)
       }))
       .sort((prev, next) => prev.level - next.level),
-    distributionMaxGeneration: Number(source.distributionMaxGeneration ?? fallback.distributionMaxGeneration)
+    distributionMaxGeneration: toNullableNumber(source.distributionMaxGeneration)
   }
 }
 
