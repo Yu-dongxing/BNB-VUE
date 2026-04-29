@@ -853,9 +853,9 @@ const validateAndNormalizeGenerationPerformanceRatios = () => {
   const normalizedRatios = normalizeGenerationPerformanceRatios(visualData.value.electricityGenerationPerformanceRatios)
   const generationSet = new Set()
 
-  if (!normalizedRatios.length) {
-    return '代数业绩比例配置不能为空'
-  }
+  // if (!normalizedRatios.length) {
+  //   return '代数业绩比例配置不能为空'
+  // }
 
   for (const item of normalizedRatios) {
     if (!Number.isInteger(item.generation) || item.generation < 1) {
