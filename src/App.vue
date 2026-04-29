@@ -103,6 +103,8 @@ const baseMenu = [
   { title: "卡牌发行", to: "/admin/cards", icon: Postcard },
   { title: "黄金量化托管费", to: "/admin/gold-quant/accounts", icon: Postcard },
   { title: "黄金量化窗口", to: "/admin/gold-quant/windows", icon: Postcard },
+  { title: "用户矿机统计", to: "/admin/miner/user-statistics", icon: Document },
+  { title: "量化收益窗口统计", to: "/admin/gold-quant/user-statistics", icon: Document },
   { title: "黄金量化分成", to: "/admin/gold-quant/commissions", icon: Document },
   { title: "合约设置", to: "/admin/settings", icon: Setting },
   { title: "个人设置", to: "/admin/profile", icon: User },

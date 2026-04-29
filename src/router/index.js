@@ -19,6 +19,8 @@ const routes = [
   { path: "/admin/cards", name: "admin-cards", component: CardManageView },
   { path: "/admin/gold-quant/accounts", name: "admin-gold-quant-accounts", component: () => import("../views/GoldQuantAccountView.vue"), meta: { title: "黄金量化托管费" } },
   { path: "/admin/gold-quant/windows", name: "admin-gold-quant-windows", component: () => import("../views/GoldQuantWindowView.vue"), meta: { title: "黄金量化窗口记录" } },
+  { path: "/admin/miner/user-statistics", name: "admin-miner-user-statistics", component: () => import("../views/MinerUserStatisticsView.vue"), meta: { title: "用户矿机统计" } },
+  { path: "/admin/gold-quant/user-statistics", name: "admin-gold-quant-user-statistics", component: () => import("../views/GoldQuantUserStatisticsView.vue"), meta: { title: "量化用户窗口统计" } },
   { path: "/admin/gold-quant/commissions", name: "admin-gold-quant-commissions", component: () => import("../views/GoldQuantCommissionView.vue"), meta: { title: "黄金量化分成/分销记录" } },
   { path: "/admin/settings", name: "admin-settings", component: () => import("../views/SettingsView.vue") },
   { path: "/admin/withdraw", name: "admin-withdraw", component: () => import("../views/WithdrawManage.vue") },

@@ -109,23 +109,22 @@ const statusOptionsTable = [
 ]
 
 /**
- *     GOLD_QUANT("GOLD_QUANT", "黄金量化"),
-    GOLD_QUANT_REWARD("GOLD_QUANT_REWARD", "黄金量化奖励分成"),
-    GOLD_QUANT_DISTRIBUTION("GOLD_QUANT_DISTRIBUTION", "黄金量化分销分成");
 
  */
 const transTypeOptions = [
   { label: '购买', value: 'PURCHASE' },
-  { label: '卖出', value: 'SELL' },
   { label: '充值', value: 'DEPOSIT' },
   { label: '提现', value: 'WITHDRAWAL' },
   { label: '闪兑', value: 'EXCHANGE' },
   { label: '奖励', value: 'REWARD' },
   { label: '收益', value: 'PROFIT' },
   { label: '转账', value: 'TRANSFER' },
+  { label: '矿机电费', value: 'MINER_ELECTRICITY' },
   { label: '黄金量化奖励分成', value: 'GOLD_QUANT_REWARD' },
   { label: '黄金量化分销分成', value: 'GOLD_QUANT_DISTRIBUTION' },
+  { label: '管理员手动发放NFT', value: 'ADMIN_MANUALLY_DISTRIBUTES_NFT' },
   { label: '黄金量化', value: 'GOLD_QUANT' },
+  { label: '矿机电费分成', value: 'MINER_ELECTRICITY_REWARD' },
 ]
 
 // --- 2. 响应式数据 ---

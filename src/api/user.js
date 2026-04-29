@@ -82,7 +82,7 @@ export function setUserCustomGrade(data) {
 
 /**
  * 后台下发业绩 / 人工充值
- * @param {{ userId: number, amount: string, source?: string }} data
+ * @param {{ userId: number, amount: string, transactionType?: string, source?: string }} data
  */
 export function depositUserAmount(data) {
   return request({

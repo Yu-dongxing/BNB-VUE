@@ -69,6 +69,15 @@ export function getGoldQuantWindowList(data) {
   });
 }
 
+// 查询黄金量化用户窗口统计
+export function getGoldQuantUserStatistics(data) {
+  return request({
+    url: "/admin/card/gold-quant/user-statistics",
+    method: "post",
+    data,
+  });
+}
+
 // 查询黄金量化分成/分销记录
 export function getGoldQuantCommissionList(data) {
   return request({

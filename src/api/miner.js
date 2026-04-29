@@ -13,6 +13,18 @@ export function getMinerList(data) {
 }
 
 /**
+ * 用户矿机统计
+ * @param {Object} data
+ */
+export function getMinerUserStatistics(data) {
+  return request({
+    url: '/admin/miner/user-statistics',
+    method: 'post',
+    data
+  })
+}
+
+/**
  * 为指定用户发放特殊矿机
  * @param {{ userId: number, quantity: number, remark?: string }} data
  */

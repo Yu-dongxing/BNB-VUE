@@ -45,6 +45,9 @@ const queryParams = reactive({
   page: 1,
   size: 10,
   userWalletAddress: '',
+  userGrade: null,
+  goldQuantRewardLevel: null,
+  goldQuantDistributionLevel: null,
   startTime: '',
   endTime: ''
 })
@@ -246,6 +249,9 @@ const handleSearch = () => {
 const resetQuery = () => {
   dateRange.value = []
   queryParams.userWalletAddress = ''
+  queryParams.userGrade = null
+  queryParams.goldQuantRewardLevel = null
+  queryParams.goldQuantDistributionLevel = null
   queryParams.page = 1
   queryParams.startTime = ''
   queryParams.endTime = ''
@@ -476,7 +482,7 @@ const openDepositDialog = (row) => {
   depositDialog.userName = row.userName
   depositDialog.form.userId = row.id
   depositDialog.form.amount = ''
-  depositDialog.form.source = 'v1 团队电费业绩'
+  depositDialog.form.source = '系统充值'
   depositDialog.visible = true
 }
 
@@ -491,6 +497,7 @@ const submitDeposit = async () => {
       const result = normalizeResult(await depositUserAmount({
         userId: depositDialog.form.userId,
         amount: String(depositDialog.form.amount).trim(),
+        transactionType:'DEPOSIT',
         source: depositDialog.form.source.trim()
       }))
 
@@ -501,10 +508,10 @@ const submitDeposit = async () => {
         return
       }
 
-      ElMessage.error(getResultMessage(result, '下发业绩失败'))
+      ElMessage.error(getResultMessage(result, '充值失败'))
     } catch (error) {
       console.error(error)
-      ElMessage.error('下发业绩失败')
+      ElMessage.error('充值失败')
     } finally {
       depositDialog.loading = false
     }
@@ -538,6 +545,36 @@ onMounted(async () => {
         <el-form-item label="钱包地址">
           <el-input v-model="queryParams.userWalletAddress" placeholder="搜索钱包地址" clearable />
         </el-form-item>
+        <el-form-item label="矿机等级">
+          <el-input-number
+            v-model="queryParams.userGrade"
+            :min="0"
+            :precision="0"
+            placeholder="等级"
+            clearable
+            style="width: 130px"
+          />
+        </el-form-item>
+        <el-form-item label="量化奖励等级">
+          <el-input-number
+            v-model="queryParams.goldQuantRewardLevel"
+            :min="0"
+            :precision="0"
+            placeholder="等级"
+            clearable
+            style="width: 130px"
+          />
+        </el-form-item>
+        <el-form-item label="量化分销等级">
+          <el-input-number
+            v-model="queryParams.goldQuantDistributionLevel"
+            :min="0"
+            :precision="0"
+            placeholder="等级"
+            clearable
+            style="width: 130px"
+          />
+        </el-form-item>
         <el-form-item label="注册时间">
           <el-date-picker
             v-model="dateRange"
@@ -560,9 +597,19 @@ onMounted(async () => {
         <el-table-column prop="id" label="ID" width="80" />
         <el-table-column prop="userName" label="用户名" min-width="140" />
         <el-table-column prop="userWalletAddress" label="钱包地址" min-width="220" show-overflow-tooltip />
-        <el-table-column prop="userGrade" label="最终等级" width="110">
+        <el-table-column prop="userGrade" label="矿机等级" width="110">
           <template #default="{ row }">
             <el-tag type="success" effect="plain">{{ formatGrade(row.userGrade) }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="goldQuantRewardLevel" label="量化奖励等级" width="130">
+          <template #default="{ row }">
+            <el-tag type="primary" effect="plain">{{ formatGrade(row.goldQuantRewardLevel) }}</el-tag>
+          </template>
+        </el-table-column>
+        <el-table-column prop="goldQuantDistributionLevel" label="量化分销等级" width="130">
+          <template #default="{ row }">
+            <el-tag type="info" effect="plain">{{ formatGrade(row.goldQuantDistributionLevel) }}</el-tag>
           </template>
         </el-table-column>
         <el-table-column prop="customUserGrade" label="自定义等级" width="120">
@@ -612,7 +659,7 @@ onMounted(async () => {
                 </el-button>
 
                 <el-button link class="btn-deposit" :icon="Money" @click="openDepositDialog(row)">
-                  下发业绩
+                  人工充值
                 </el-button>
 
                 <el-button
@@ -696,7 +743,7 @@ onMounted(async () => {
       </template>
     </el-dialog>
 
-    <el-dialog v-model="depositDialog.visible" title="下发业绩 / 人工充值" width="500px" append-to-body>
+    <el-dialog v-model="depositDialog.visible" title="人工充值" width="500px" append-to-body>
       <el-form
         ref="depositFormRef"
         :model="depositDialog.form"
@@ -706,24 +753,24 @@ onMounted(async () => {
         <el-form-item label="目标用户">
           <el-input :value="`${depositDialog.userName}（ID：${depositDialog.form.userId || '-'}）`" disabled />
         </el-form-item>
-        <el-form-item label="下发金额" prop="amount">
+        <el-form-item label="充值金额" prop="amount">
           <el-input
             v-model="depositDialog.form.amount"
-            placeholder="请输入金额，例如：100.000000000000000000"
+            placeholder="请输入金额，例如：100.00"
           />
         </el-form-item>
-        <el-form-item label="资金来源" prop="source">
+        <el-form-item label="资金备注" prop="source">
           <el-input
             v-model="depositDialog.form.source"
             maxlength="60"
             show-word-limit
-            placeholder="例如：v1 团队电费业绩"
+            placeholder="例如：系统充值"
           />
         </el-form-item>
       </el-form>
       <template #footer>
         <el-button @click="depositDialog.visible = false">取消</el-button>
-        <el-button type="success" :loading="depositDialog.loading" @click="submitDeposit">确认下发</el-button>
+        <el-button type="success" :loading="depositDialog.loading" @click="submitDeposit">确认充值</el-button>
       </template>
     </el-dialog>
 
