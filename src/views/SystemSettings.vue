@@ -808,13 +808,13 @@ const validateMinerDailyProfits = () => {
 }
 
 const validateAndNormalizeMinerTiers = () => {
-  if (typeof visualData.value.activeMinerGradeMode !== 'boolean') {
-    return '等级判断标准必须选择'
-  }
+  // if (typeof visualData.value.activeMinerGradeMode !== 'boolean') {
+  //   return '等级判断标准必须选择'
+  // }
 
-  if (!Array.isArray(visualData.value.tiers) || visualData.value.tiers.length === 0) {
-    return '等级与分成配置不能为空'
-  }
+  // if (!Array.isArray(visualData.value.tiers) || visualData.value.tiers.length === 0) {
+  //   return '等级与分成配置不能为空'
+  // }
 
   const normalizedTiers = normalizeMinerTiers(visualData.value.tiers)
   const minCountSet = new Set()
@@ -956,9 +956,9 @@ const validateRatio = (value, label) => {
 const validateAndNormalizeGoldQuantCommissionSettings = () => {
   const nextSettings = sanitizeGoldQuantCommissionSettings(visualData.value)
 
-  if (!nextSettings.rewardLevels.length) return '奖励等级规则不能为空'
-  if (!nextSettings.rewardRules.length) return '奖励分成代数规则不能为空'
-  if (!nextSettings.distributionLevels.length) return '分销等级规则不能为空'
+  // if (!nextSettings.rewardLevels.length) return '奖励等级规则不能为空'
+  // if (!nextSettings.rewardRules.length) return '奖励分成代数规则不能为空'
+  // if (!nextSettings.distributionLevels.length) return '分销等级规则不能为空'
 
   let validationMessage =
     validateUniqueIntegerField(nextSettings.rewardLevels, 'level', '奖励等级') ||
