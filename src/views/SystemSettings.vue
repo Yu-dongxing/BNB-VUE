@@ -103,6 +103,15 @@
 
             <el-row :gutter="20">
               <el-col :span="6">
+                <el-form-item :label="FIELD_MAP.electricityRewardEnabled">
+                  <el-switch
+                    v-model="visualData.electricityRewardEnabled"
+                    active-text="开启"
+                    inactive-text="关闭"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="6">
                 <el-form-item :label="FIELD_MAP.electricFee">
                   <el-input-number v-model="visualData.electricFee" :precision="2" :step="0.1" style="width: 100%" />
                 </el-form-item>
@@ -349,6 +358,28 @@
           </div>
 
           <div v-else-if="form.configKey === 'GOLD_QUANT_COMMISSION_SETTINGS'" class="custom-form-box">
+            <el-divider content-position="left">分成开关配置</el-divider>
+            <el-row :gutter="20">
+              <el-col :span="8">
+                <el-form-item :label="FIELD_MAP.rewardCommissionEnabled">
+                  <el-switch
+                    v-model="visualData.rewardCommissionEnabled"
+                    active-text="开启"
+                    inactive-text="关闭"
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="8">
+                <el-form-item :label="FIELD_MAP.distributionCommissionEnabled">
+                  <el-switch
+                    v-model="visualData.distributionCommissionEnabled"
+                    active-text="开启"
+                    inactive-text="关闭"
+                  />
+                </el-form-item>
+              </el-col>
+            </el-row>
+
             <el-divider content-position="left">奖励等级规则</el-divider>
             <div class="dynamic-list-container">
               <div v-for="(item, index) in visualData.rewardLevels" :key="`reward-level-${index}`" class="dynamic-row">
@@ -529,6 +560,12 @@ const normalizeSmallAreaUnlimitedElectricityReward = (value) => {
   return null
 }
 
+const normalizeBoolean = (value, defaultValue = false) => {
+  if (value === false || value === 'false' || value === 0 || value === '0') return false
+  if (value === true || value === 'true' || value === 1 || value === '1') return true
+  return defaultValue
+}
+
 const normalizeMinerTiers = (tiers = []) => {
   if (!Array.isArray(tiers)) return []
 
@@ -578,6 +615,7 @@ const normalizeGenerationPerformanceRatios = (ratios = []) => {
 const sanitizeMinerSettings = (source = {}) => {
   return {
     ...source,
+    electricityRewardEnabled: normalizeBoolean(source.electricityRewardEnabled, false),
     activeMinerGradeMode: normalizeActiveMinerGradeMode(source.activeMinerGradeMode),
     smallAreaUnlimitedElectricityReward: normalizeSmallAreaUnlimitedElectricityReward(
       source.smallAreaUnlimitedElectricityReward
@@ -597,6 +635,7 @@ const sanitizeMinerSettings = (source = {}) => {
 }
 
 const FIELD_MAP = {
+  electricityRewardEnabled: '矿机电费分成开关',
   electricFee: '电费单价 (USDT)',
   accelerationFee: '加速包费用 (USDT)',
   profitTime: '矿机收益发放时间',
@@ -613,7 +652,9 @@ const FIELD_MAP = {
   maintenanceDays: '维护费延长天数',
   minerThreshold: '新购窗口最低矿机数',
   maxWindowCount: '每用户最多窗口数',
-  distributionMaxGeneration: '分销最大计算代数'
+  distributionMaxGeneration: '分销最大计算代数',
+  rewardCommissionEnabled: '黄金量化奖励分成开关',
+  distributionCommissionEnabled: '黄金量化分销分成开关',
 }
 
 const VISUAL_KEYS = ['MINER_SYSTEM_SETTINGS', 'WITHDRAW_SETTINGS', 'GOLD_QUANT_SETTINGS', 'GOLD_QUANT_COMMISSION_SETTINGS']
@@ -894,6 +935,8 @@ const sanitizeGoldQuantSettings = (source = {}) => ({
 
 const sanitizeGoldQuantCommissionSettings = (source = {}) => {
   return {
+    rewardCommissionEnabled: normalizeBoolean(source.rewardCommissionEnabled, false),
+    distributionCommissionEnabled: normalizeBoolean(source.distributionCommissionEnabled, false),
     rewardLevels: (Array.isArray(source.rewardLevels) ? source.rewardLevels : [])
       .map((item) => ({
         level: toNullableNumber(item.level),
@@ -955,6 +998,10 @@ const validateRatio = (value, label) => {
 
 const validateAndNormalizeGoldQuantCommissionSettings = () => {
   const nextSettings = sanitizeGoldQuantCommissionSettings(visualData.value)
+  const distributionMaxGenerationError =
+    nextSettings.distributionMaxGeneration === null
+      ? ''
+      : validatePositiveInteger(nextSettings.distributionMaxGeneration, FIELD_MAP.distributionMaxGeneration)
 
   // if (!nextSettings.rewardLevels.length) return '奖励等级规则不能为空'
   // if (!nextSettings.rewardRules.length) return '奖励分成代数规则不能为空'
@@ -964,7 +1011,7 @@ const validateAndNormalizeGoldQuantCommissionSettings = () => {
     validateUniqueIntegerField(nextSettings.rewardLevels, 'level', '奖励等级') ||
     validateUniqueIntegerField(nextSettings.rewardRules, 'level', '奖励规则等级') ||
     validateUniqueIntegerField(nextSettings.distributionLevels, 'level', '分销等级') ||
-    validatePositiveInteger(nextSettings.distributionMaxGeneration, '分销最大计算代数')
+    distributionMaxGenerationError
 
   if (validationMessage) return validationMessage
 
